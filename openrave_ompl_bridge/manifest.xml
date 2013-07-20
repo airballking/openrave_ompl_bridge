@@ -1,0 +1,15 @@
+<package>
+  <description brief="openrave_ompl_bridge">
+
+     Exposing OMPL planners as an OpenRAVE planning plugin.
+
+  </description>
+  <author>Georg Bartels</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <depend package="roscpp"/>
+  <depend package="openrave"/>
+
+</package>
+
+
