@@ -1,4 +1,4 @@
-#include <openrave_ompl_bridge/OMPLPlanParametersRRTConnect.h>
+#include <openrave_ompl_bridge/OMPLPlannerParametersRRTConnect.h>
 
 using namespace openrave_ompl_bridge;
 

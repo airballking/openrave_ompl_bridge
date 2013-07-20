@@ -28,6 +28,6 @@ namespace openrave_ompl_bridge
 
   // useful typedef for pointers to objects of this class
   typedef boost::shared_ptr<OMPLPlannerParametersRRTConnect> OMPLPlannerParametersRRTConnectPtr;
-}
+} //namespace openrave_ompl_bridge
 
 #endif // OPENRAVE_OMPL_BRIDGE_OMPL_PLAN_PARAMETERS_RTT_CONNECT_H
