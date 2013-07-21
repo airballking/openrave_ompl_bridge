@@ -10,6 +10,10 @@
   <depend package="roscpp"/>
   <depend package="openrave"/>
 
+  <export>
+    <openrave plugins="${prefix}/lib"/>
+  </export>
+
 </package>
 
 
