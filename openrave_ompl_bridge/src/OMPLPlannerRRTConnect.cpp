@@ -1,33 +1,30 @@
 #include <openrave_ompl_bridge/OMPLPlannerRRTConnect.h>
 
-using namespace openrave_ompl_bridge;
+using namespace OpenRAVE;
 
-OMPLPlannerRRTConnect::OMPLPlannerRRTConnect(OpenRAVE::EnvironmentBasePtr penv) : OpenRAVE::PlannerBase(penv)
+namespace openrave_ompl_bridge
 {
-  // do nothing
-}
+  OMPLPlannerRRTConnect::OMPLPlannerRRTConnect(OpenRAVE::EnvironmentBasePtr penv) : OpenRAVE::PlannerBase(penv)
+  {
+  }
 
-OMPLPlannerRRTConnect::~OMPLPlannerRRTConnect()
-{
-  // do nothing
-}
+  OMPLPlannerRRTConnect::~OMPLPlannerRRTConnect()
+  {
+  }
 
-bool OMPLPlannerRRTConnect::InitPlan(OpenRAVE::RobotBasePtr robot, PlannerParametersConstPtr params)
-{
-  return false;
-}
+  bool OMPLPlannerRRTConnect::InitPlan(OpenRAVE::RobotBasePtr robot, PlannerParametersConstPtr params)
+  {
+    return false;
+  }
 
-bool OMPLPlannerRRTConnect::InitPlan(OpenRAVE::RobotBasePtr robot, std::istream& input)
-{
-  return false;
-}
+  bool OMPLPlannerRRTConnect::InitPlan(OpenRAVE::RobotBasePtr robot, std::istream& input)
+  {
+    return false;
+  }
 
-OpenRAVE::PlannerStatus OMPLPlannerRRTConnect::PlanPath (OpenRAVE::TrajectoryBasePtr ptraj)
-{
-  return OpenRAVE::PS_Failed;
-}
+  OpenRAVE::PlannerStatus OMPLPlannerRRTConnect::PlanPath (OpenRAVE::TrajectoryBasePtr ptraj)
+  {
+    return OpenRAVE::PS_Failed;
+  }
 
-OpenRAVE::PlannerBase::PlannerParametersConstPtr OMPLPlannerRRTConnect::GetParameters() const
-{
-  return parameters_;
-}
+} /* namespace openrave_ompl_bridge */

@@ -7,14 +7,9 @@ using namespace OpenRAVE;
 
 InterfaceBasePtr CreateInterfaceValidated(InterfaceType type, const std::string& interfacename, std::istream& sinput, EnvironmentBasePtr penv)
 {
-    if (type == PT_Planner)
+    if (type == PT_Planner && interfacename == "omplrrtconnect")
     {
-      // assertion: someone wants to create a planner plugin
-      // add patterns for future OMPL planners below
-      if (interfacename == "ompl_rrtconnect")
-      {
-        return InterfaceBasePtr(new openrave_ompl_bridge::OMPLPlannerRRTConnect(penv));
-      }
+      return InterfaceBasePtr(new openrave_ompl_bridge::OMPLPlannerRRTConnect(penv));
     }
     // we did not fit requested planner plugin
     return InterfaceBasePtr();
@@ -23,7 +18,7 @@ InterfaceBasePtr CreateInterfaceValidated(InterfaceType type, const std::string&
 void GetPluginAttributesValidated(PLUGININFO& info)
 {
     // add any new OMP planner to this list
-    info.interfacenames[PT_Planner].push_back("ompl_rttconnect");
+    info.interfacenames[PT_Planner].push_back("omplrrtconnect");
 }
 
 RAVE_PLUGIN_API void DestroyPlugin()

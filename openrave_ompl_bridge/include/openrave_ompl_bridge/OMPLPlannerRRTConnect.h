@@ -3,6 +3,7 @@
 
 #include <openrave-core.h>
 #include <openrave/planner.h>
+
 #include <openrave_ompl_bridge/OMPLPlannerParametersRRTConnect.h>
 
 namespace openrave_ompl_bridge
@@ -23,7 +24,7 @@ namespace openrave_ompl_bridge
       virtual OpenRAVE::PlannerStatus PlanPath (OpenRAVE::TrajectoryBasePtr ptraj);
 
       // get for the current specification of the planning problem
-      virtual PlannerParametersConstPtr GetParameters () const;
+      virtual PlannerParametersConstPtr GetParameters () const { return parameters_; }
 
     private:
       // internal pointer to the parameters of the planning problem
