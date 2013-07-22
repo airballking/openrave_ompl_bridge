@@ -12,7 +12,7 @@ namespace openrave_ompl_bridge
   {
   }
 
-  bool OMPLPlannerRRTConnect::InitPlan(OpenRAVE::RobotBasePtr robot, PlannerParametersConstPtr params)
+  bool OMPLPlannerRRTConnect::InitPlan(OpenRAVE::RobotBasePtr robot, OpenRAVE::PlannerBase::PlannerParametersConstPtr params)
   {
     return false;
   }
@@ -25,6 +25,11 @@ namespace openrave_ompl_bridge
   OpenRAVE::PlannerStatus OMPLPlannerRRTConnect::PlanPath (OpenRAVE::TrajectoryBasePtr ptraj)
   {
     return OpenRAVE::PS_Failed;
+  }
+
+  OpenRAVE::PlannerBase::PlannerParametersConstPtr OMPLPlannerRRTConnect::GetParameters () const
+  {
+    return parameters_;
   }
 
 } /* namespace openrave_ompl_bridge */

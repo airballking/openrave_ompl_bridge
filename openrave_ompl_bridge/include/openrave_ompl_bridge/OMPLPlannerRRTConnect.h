@@ -17,14 +17,14 @@ namespace openrave_ompl_bridge
       virtual ~OMPLPlannerRRTConnect();
 
       // two ways of initializing a planning problem: (1) a parameters-object (2) parameters in xml-stream
-      virtual bool InitPlan(OpenRAVE::RobotBasePtr robot, PlannerParametersConstPtr params);
+      virtual bool InitPlan(OpenRAVE::RobotBasePtr robot, OpenRAVE::PlannerBase::PlannerParametersConstPtr params);
       virtual bool InitPlan(OpenRAVE::RobotBasePtr robot, std::istream& input);
 
       // call to trigger planning of current problem
       virtual OpenRAVE::PlannerStatus PlanPath (OpenRAVE::TrajectoryBasePtr ptraj);
 
       // get for the current specification of the planning problem
-      virtual PlannerParametersConstPtr GetParameters () const { return parameters_; }
+      virtual OpenRAVE::PlannerBase::PlannerParametersConstPtr GetParameters () const;
 
     private:
       // internal pointer to the parameters of the planning problem
