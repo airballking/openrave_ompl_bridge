@@ -11,6 +11,7 @@
   <depend package="openrave"/>
 
   <rosdep name="ompl"/>
+  <rosdep name="gtest"/>
 
   <export>
     <openrave plugins="${prefix}/lib"/>
