@@ -52,8 +52,13 @@ namespace openrave_ompl_bridge
     if(!SolveWithTimelimit(parameters_->GetTimeLimit()))
       return OpenRAVE::PS_Failed;
 
-    // TODO(Georg): implement me
-    return OpenRAVE::PS_Failed;
+    if(!SmoothenPath())
+      return OpenRAVE::PS_Failed;
+
+    if(!CopyFinalPath(ptraj))
+      return OpenRAVE::PS_Failed;
+
+    return OpenRAVE::PS_HasSolution;
   }
 
   OpenRAVE::PlannerBase::PlannerParametersConstPtr OMPLPlannerRRTConnect::GetParameters () const
@@ -188,6 +193,74 @@ namespace openrave_ompl_bridge
     return simple_setup_->solve(timelimit);
   }
 
+  bool OMPLPlannerRRTConnect::SmoothenPath(double timelimit)
+  {
+    if(!EnsureSolutionPath())
+      return false;
+
+    simple_setup_->simplifySolution(timelimit);
+    return true;
+  }
+
+  bool OMPLPlannerRRTConnect::CopyFinalPath(OpenRAVE::TrajectoryBasePtr ptraj)
+  {
+    assert(ptraj);
+    
+    if(!EnsureSolutionPath())
+      return false;
+
+    InitSolutionPathContainer(ptraj);
+
+    std::vector<ompl::base::State*> states = GetSolutionPath();
+    for (unsigned int i=0; i<states.size(); i++)
+    {
+      ptraj->Insert(i, TransformPathPoint(states[i]).q, true);
+    }
+    
+    return true;
+  }
+
+  void OMPLPlannerRRTConnect::InitSolutionPathContainer(OpenRAVE::TrajectoryBasePtr ptraj)
+  {
+    assert(robot_);
+
+    ptraj->Init(robot_->GetActiveConfigurationSpecification());
+  }
+
+  bool OMPLPlannerRRTConnect::EnsureSolutionPath()
+  {
+    assert(simple_setup_);
+
+    if(!simple_setup_->haveSolutionPath())
+    {
+      RAVELOG_ERROR("Now solution path was found. Aborting!\n");
+      return false;
+    }
+
+    return true;
+  }
+
+  std::vector<ompl::base::State*> OMPLPlannerRRTConnect::GetSolutionPath()
+  {
+    assert(simple_setup_);
+
+    return simple_setup_->getSolutionPath().getStates();
+  }
+
+  OpenRAVE::TrajectoryBase::Point OMPLPlannerRRTConnect::TransformPathPoint(ompl::base::State* state)
+  {
+    const ompl::base::RealVectorStateSpace::StateType* state_cast = state->as<ompl::base::RealVectorStateSpace::StateType>();
+
+    assert(state_cast);
+    assert(GetStateSpaceDimensions() == GetRobotDOF());
+
+    OpenRAVE::TrajectoryBase::Point result;
+    for(unsigned int j = 0; j < GetRobotDOF(); j++)
+      result.q.push_back((*state_cast)[j]);
+
+    return result;
+  }
+
   bool OMPLPlannerRRTConnect::IsStateValid(const ompl::base::State* state)
   {
     assert(state);
@@ -238,4 +311,3 @@ namespace openrave_ompl_bridge
     return GetEnv()->CheckCollision(KinBodyConstPtr(robot_)) || robot_->CheckSelfCollision();
   }
 } /* namespace openrave_ompl_bridge */
-

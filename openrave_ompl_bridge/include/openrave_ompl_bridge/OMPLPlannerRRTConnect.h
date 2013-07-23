@@ -52,7 +52,13 @@ namespace openrave_ompl_bridge
 
       //internal helper functions for plan...
       bool EnsureInitializedPlan();
-      bool SolveWithTimelimit(double time_limit);
+      bool SolveWithTimelimit(double timelimit);
+      bool SmoothenPath(double timelimit = 0.0);
+      bool CopyFinalPath(OpenRAVE::TrajectoryBasePtr ptraj);
+      bool EnsureSolutionPath();
+      std::vector<ompl::base::State*> GetSolutionPath();
+      void InitSolutionPathContainer(OpenRAVE::TrajectoryBasePtr ptraj);
+      OpenRAVE::TrajectoryBase::Point TransformPathPoint(ompl::base::State* state);
 
       // helper functions required by OMPL
       bool IsStateValid(const ompl::base::State* state);
