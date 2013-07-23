@@ -18,6 +18,7 @@ namespace openrave_ompl_bridge
       // accessors to parameters of interest to others 
       std::vector<double> GetStartConfiguration();
       std::vector<double> GetGoalConfiguration();
+      double GetTimeLimit();
 
     protected:
       // helper function which generates an xml-representation of this object and flushes it into an output-stream
@@ -28,6 +29,9 @@ namespace openrave_ompl_bridge
 
       // another aux-function for xml-parsing, called at end of each xml-field, returns true if parsing of field was successful
       virtual bool endElement(const std::string& name);
+
+      // actual parameters...
+      double timelimit;
   };
 
   // useful typedef for pointers to objects of this class

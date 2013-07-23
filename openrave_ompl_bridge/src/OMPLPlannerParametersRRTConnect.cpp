@@ -25,9 +25,14 @@ namespace openrave_ompl_bridge
   {
     return vinitialconfig;
   }
+
   std::vector<double> OMPLPlannerParametersRRTConnect::GetGoalConfiguration()
   {
     return vgoalconfig;
   }
 
+  double OMPLPlannerParametersRRTConnect::GetTimeLimit()
+  {
+    return timelimit;
+  }
 } /* namespace openrave_ompl_bridge */
