@@ -4,6 +4,8 @@
 #include <openrave-core.h>
 #include <openrave/planner.h>
 
+#include <ompl/geometric/SimpleSetup.h>
+
 namespace openrave_ompl_bridge
 {
   // a calls to hold the parameters for the RRTConnect algorithm in the OMPL library
@@ -12,8 +14,10 @@ namespace openrave_ompl_bridge
     public:
       // well, the default constructor of this class ;)
       OMPLPlannerParametersRRTConnect();
-    
-      // all parameters we need to set up the RRTConnect from OMPL
+   
+      // accessors to parameters of interest to others 
+      std::vector<double> GetStartConfiguration();
+      std::vector<double> GetGoalConfiguration();
 
     protected:
       // helper function which generates an xml-representation of this object and flushes it into an output-stream

@@ -2,7 +2,7 @@
 
 namespace openrave_ompl_bridge
 {
-  OMPLPlannerParametersRRTConnect::OMPLPlannerParametersRRTConnect()
+  OMPLPlannerParametersRRTConnect::OMPLPlannerParametersRRTConnect() 
   {
   }
 
@@ -19,6 +19,15 @@ namespace openrave_ompl_bridge
   bool OMPLPlannerParametersRRTConnect::endElement(const std::string& name)
   {
     return false;
+  }
+
+  std::vector<double> OMPLPlannerParametersRRTConnect::GetStartConfiguration()
+  {
+    return vinitialconfig;
+  }
+  std::vector<double> OMPLPlannerParametersRRTConnect::GetGoalConfiguration()
+  {
+    return vgoalconfig;
   }
 
 } /* namespace openrave_ompl_bridge */

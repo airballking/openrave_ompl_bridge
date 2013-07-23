@@ -15,3 +15,5 @@ rosbuild_add_library(${PROJECT_NAME} src/OMPLPlannersMain.cpp src/OMPLPlannerRRT
 #rosbuild_link_boost(${PROJECT_NAME} thread)
 #rosbuild_add_executable(example examples/example.cpp)
 #target_link_libraries(example ${PROJECT_NAME})
+
+target_link_libraries(${PROJECT_NAME} ompl)

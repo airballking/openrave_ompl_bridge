@@ -10,6 +10,8 @@
   <depend package="roscpp"/>
   <depend package="openrave"/>
 
+  <rosdep name="ompl"/>
+
   <export>
     <openrave plugins="${prefix}/lib"/>
   </export>
