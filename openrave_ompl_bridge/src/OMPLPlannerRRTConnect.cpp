@@ -43,6 +43,15 @@ namespace openrave_ompl_bridge
 
   OpenRAVE::PlannerStatus OMPLPlannerRRTConnect::PlanPath (OpenRAVE::TrajectoryBasePtr ptraj)
   {
+    assert(ptraj);
+    assert(parameters_);
+
+    if(!EnsureInitializedPlan())
+      return OpenRAVE::PS_Failed;
+
+    if(!SolveWithTimelimit(parameters_->GetTimeLimit()))
+      return OpenRAVE::PS_Failed;
+
     // TODO(Georg): implement me
     return OpenRAVE::PS_Failed;
   }
@@ -160,6 +169,23 @@ namespace openrave_ompl_bridge
     assert(state_space_);
 
     return state_space_->as<ompl::base::RealVectorStateSpace>()->getDimension();
+  }
+
+  bool OMPLPlannerRRTConnect::EnsureInitializedPlan()
+  {
+    if(!simple_setup_)
+    {
+      RAVELOG_ERROR("Internal pointer to simple setup was NULL. Aborting!.\n");
+      return false;
+    }
+
+      return true;
+  }
+
+  bool OMPLPlannerRRTConnect::SolveWithTimelimit(double timelimit)
+  {
+    assert(simple_setup_);
+    return simple_setup_->solve(timelimit);
   }
 
   bool OMPLPlannerRRTConnect::IsStateValid(const ompl::base::State* state)

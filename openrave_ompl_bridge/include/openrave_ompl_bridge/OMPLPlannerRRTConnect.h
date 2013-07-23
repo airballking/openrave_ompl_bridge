@@ -50,6 +50,10 @@ namespace openrave_ompl_bridge
       ompl::base::ScopedState<> GetGoalState();
       unsigned int GetStateSpaceDimensions();
 
+      //internal helper functions for plan...
+      bool EnsureInitializedPlan();
+      bool SolveWithTimelimit(double time_limit);
+
       // helper functions required by OMPL
       bool IsStateValid(const ompl::base::State* state);
 
