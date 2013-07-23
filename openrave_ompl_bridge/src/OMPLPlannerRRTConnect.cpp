@@ -36,8 +36,9 @@ namespace openrave_ompl_bridge
 
   bool OMPLPlannerRRTConnect::InitPlan(OpenRAVE::RobotBasePtr robot, std::istream& input)
   {
-    //TODO(GEORG): implement me using the other InitPlan
-    return false;
+    OMPLPlannerParametersRRTConnect* parameters = new OMPLPlannerParametersRRTConnect();
+    input >> (*parameters);
+    return InitPlan(robot, OpenRAVE::PlannerBase::PlannerParametersConstPtr(parameters));
   }
 
   OpenRAVE::PlannerStatus OMPLPlannerRRTConnect::PlanPath (OpenRAVE::TrajectoryBasePtr ptraj)
