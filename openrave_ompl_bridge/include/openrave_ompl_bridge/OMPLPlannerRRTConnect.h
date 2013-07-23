@@ -25,6 +25,7 @@ namespace openrave_ompl_bridge
   class OMPLPlannerRRTConnect: public OpenRAVE::PlannerBase
   {
     public:
+      /* THE STANDARD OPENRAVE PLANNER PLUGIN INTERFACE */
       // constructor and destructor required to declare and implement for planner plugin in OpenRAVE
       OMPLPlannerRRTConnect(OpenRAVE::EnvironmentBasePtr penv);
       virtual ~OMPLPlannerRRTConnect();
@@ -36,10 +37,10 @@ namespace openrave_ompl_bridge
       // call to trigger planning of current problem
       virtual OpenRAVE::PlannerStatus PlanPath (OpenRAVE::TrajectoryBasePtr ptraj);
 
-      // get for the current specification of the planning problem
+      // getter for the current specification of the planning problem
       virtual OpenRAVE::PlannerBase::PlannerParametersConstPtr GetParameters () const;
 
-    private:
+      /* OMPL- AND RRTCONNECT-SPECIFIC CODE */
       // internal helper functions for init...
       bool CopyRobot(OpenRAVE::RobotBasePtr robot);
       bool CopyParameters(OpenRAVE::PlannerBase::PlannerParametersConstPtr parameters);
@@ -68,7 +69,8 @@ namespace openrave_ompl_bridge
       bool EnsureActiveRobotDOF();
       void GetRobotActiveJointLimits(std::vector<double>& lower, std::vector<double>& upper);
       bool CheckForRobotCollisions(std::vector<double>& joint_values);
-      
+
+    private:  
       // internal members...
       OMPLPlannerParametersRRTConnectPtr parameters_;
       OMPLSimpleSetupPtr simple_setup_;
