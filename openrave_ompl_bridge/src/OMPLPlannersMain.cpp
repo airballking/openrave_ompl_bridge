@@ -24,6 +24,5 @@ void GetPluginAttributesValidated(PLUGININFO& info)
 RAVE_PLUGIN_API void DestroyPlugin()
 {
     // so far, do nothing
-    RAVELOG_INFO("destroying plugin\n");
 }
 
