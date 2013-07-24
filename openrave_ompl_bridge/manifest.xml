@@ -9,6 +9,7 @@
   <review status="unreviewed" notes=""/>
   <depend package="roscpp"/>
   <depend package="openrave"/>
+  <depend package="pr_ordata"/> <!-- only a test dependency -->
 
   <rosdep name="ompl"/>
   <rosdep name="gtest"/>

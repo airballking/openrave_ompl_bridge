@@ -16,6 +16,8 @@ class PlannerTest : public ::testing::Test
       env = OpenRAVE::RaveCreateEnvironment();
       planner = OpenRAVE::RaveCreatePlanner(env, "omplrrtconnect");
       planner2 = boost::static_pointer_cast<openrave_ompl_bridge::OMPLPlannerRRTConnect>(planner);
+      if(env)
+        robot = env->ReadRobotXMLFile("robots/herb2_padded_nosensors.robot.xml");
     }
 
     virtual void TearDown()
@@ -24,6 +26,7 @@ class PlannerTest : public ::testing::Test
     }
 
     OpenRAVE::EnvironmentBasePtr env;
+    OpenRAVE::RobotBasePtr robot;
     OpenRAVE::PlannerBasePtr planner;
     OMPLPlannerRRTConnectPtr planner2;
 };
@@ -33,4 +36,5 @@ TEST_F(PlannerTest, FixtureSetup)
   EXPECT_TRUE(env);
   EXPECT_TRUE(planner);
   EXPECT_TRUE(planner2);
+  EXPECT_TRUE(robot);
 }
