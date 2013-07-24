@@ -107,7 +107,8 @@ namespace openrave_ompl_bridge
    
     ompl::base::RealVectorBounds bounds(GetRobotDOF());
     std::vector<double> lower_limits, upper_limits;
-    GetRobotActiveJointLimits(lower_limits, upper_limits);     
+    if(!GetRobotActiveJointLimits(lower_limits, upper_limits))
+      return false;
 
     assert(GetRobotDOF() == lower_limits.size());
     assert(GetRobotDOF() == upper_limits.size());
@@ -294,10 +295,13 @@ namespace openrave_ompl_bridge
     return (GetRobotDOF() > 0);
   }
 
-  void OMPLPlannerRRTConnect::GetRobotActiveJointLimits(std::vector<double>& lower, std::vector<double>& upper)
+  bool OMPLPlannerRRTConnect::GetRobotActiveJointLimits(std::vector<double>& lower, std::vector<double>& upper)
   {
-    assert(robot_);
+    if(!HasActiveRobotDOF())
+      return false;
+    
     robot_->GetActiveDOFLimits(lower, upper);
+    return true;
   }
 
   bool OMPLPlannerRRTConnect::CheckForRobotCollisions(std::vector<double>& joint_values)
