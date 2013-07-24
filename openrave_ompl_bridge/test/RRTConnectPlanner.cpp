@@ -126,3 +126,22 @@ TEST_F(PlannerTest, HasActiveRobotDOF)
   herb->SetActiveDOFs(no_joints);
   EXPECT_FALSE(planner2->HasActiveRobotDOF());
 }
+
+TEST_F(PlannerTest, GetRobotActiveJointLimits)
+{
+  ASSERT_TRUE(planner2);
+  std::vector<double> lower, upper;
+  EXPECT_FALSE(planner2->GetRobotActiveJointLimits(lower, upper));
+
+  ASSERT_TRUE(herb);
+  ASSERT_TRUE(planner2->CopyRobot(herb));
+  EXPECT_TRUE(planner2->GetRobotActiveJointLimits(lower, upper));
+  EXPECT_EQ(lower.size(), planner2->GetRobotDOF());
+  EXPECT_EQ(lower.size(), upper.size());
+
+  ASSERT_TRUE(right_arm);
+  herb->SetActiveDOFs(right_arm->GetArmIndices());
+  EXPECT_TRUE(planner2->GetRobotActiveJointLimits(lower, upper));
+  EXPECT_EQ(lower.size(), planner2->GetRobotDOF());
+  EXPECT_EQ(lower.size(), upper.size());
+}
