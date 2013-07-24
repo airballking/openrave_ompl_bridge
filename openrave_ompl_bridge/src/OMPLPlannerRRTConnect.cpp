@@ -92,7 +92,7 @@ namespace openrave_ompl_bridge
 
   bool OMPLPlannerRRTConnect::ResetStateSpaceDimensions()
   {
-    if(!EnsureActiveRobotDOF())
+    if(!HasActiveRobotDOF())
       return false;
     
     state_space_ = ompl::base::StateSpacePtr(new ompl::base::RealVectorStateSpace(GetRobotDOF()));
@@ -102,7 +102,7 @@ namespace openrave_ompl_bridge
 
   bool OMPLPlannerRRTConnect::ResetStateSpaceBoundaries()
   {
-    if(!EnsureActiveRobotDOF())
+    if(!HasActiveRobotDOF())
       return false;
    
     ompl::base::RealVectorBounds bounds(GetRobotDOF());
@@ -280,19 +280,18 @@ namespace openrave_ompl_bridge
 
   unsigned int OMPLPlannerRRTConnect::GetRobotDOF()
   {
-    assert(robot_);
+    if(!robot_)
+    {
+      RAVELOG_ERROR("No robot given to query for joints! \n");
+      return 0;
+    }
+
     return robot_->GetActiveDOF();
   }
 
-  bool OMPLPlannerRRTConnect::EnsureActiveRobotDOF()
+  bool OMPLPlannerRRTConnect::HasActiveRobotDOF()
   {
-    if(GetRobotDOF())
-    {
-      RAVELOG_ERROR("Given robot does not have any active joints. Aborting init!\n");
-      return false;
-    }
-
-    return true;
+    return (GetRobotDOF() > 0);
   }
 
   void OMPLPlannerRRTConnect::GetRobotActiveJointLimits(std::vector<double>& lower, std::vector<double>& upper)
