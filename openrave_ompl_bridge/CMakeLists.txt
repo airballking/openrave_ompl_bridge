@@ -20,5 +20,5 @@ target_link_libraries(${PROJECT_NAME} ompl)
 
 # UNIT TESTING
 #SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
-rosbuild_add_gtest(test/unit_tests test/UnitTests.cpp test/PluginTests.cpp test/RRTConnectParameters.cpp)
+rosbuild_add_gtest(test/unit_tests test/UnitTests.cpp test/PluginTests.cpp test/RRTConnectParameters.cpp test/RRTConnectPlanner.cpp)
 target_link_libraries(test/unit_tests ompl ${PROJECT_NAME})
