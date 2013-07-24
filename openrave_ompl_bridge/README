@@ -1,0 +1,9 @@
+INSTALLATION
+************
+- Make sure to add the following lines to your ~/.bashrc file:
+
+export OPENRAVE_PLUGINS=$(rospack find openrave_ompl_bridge)/lib
+export OPENRAVE_DATA=$(rospack find pr_ordata)/ordata
+
+(Sorry for causing this mess. I tried avoiding it but the OpenRAVE API did not let me.)
+
