@@ -12,7 +12,7 @@ class PlannerTest : public ::testing::Test
   protected:
     virtual void SetUp()
     {
-      GetRaveEnvironment();     
+      GetRaveEnvironment();
       CreatePlanner();
       LoadRobot();
       GetManipulators();    
@@ -33,7 +33,7 @@ class PlannerTest : public ::testing::Test
         planner2 = boost::static_pointer_cast<openrave_ompl_bridge::OMPLPlannerRRTConnect>(planner);
       }
     }
-   
+
     void LoadRobot()
     {
       if(env)
@@ -144,4 +144,26 @@ TEST_F(PlannerTest, GetRobotActiveJointLimits)
   EXPECT_TRUE(planner2->GetRobotActiveJointLimits(lower, upper));
   EXPECT_EQ(lower.size(), planner2->GetRobotDOF());
   EXPECT_EQ(lower.size(), upper.size());
+}
+
+TEST_F(PlannerTest, CheckForRobotCollisions)
+{
+  double no_col[] = {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0};
+  double col[] = {4.8, 0.0, 0.0, 2.0, -2.0, 0.0, 0.0};
+  double left[] = {0.9, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+  std::vector<double> no_collision_config (no_col, no_col + sizeof(no_col) / sizeof(no_col[0]) );
+  std::vector<double> collision_config (col, col + sizeof(col) / sizeof(col[0]) );
+  std::vector<double> left_arm_config (left, left + sizeof(left) / sizeof(left[0]) );
+
+  ASSERT_TRUE(planner2);
+  ASSERT_TRUE(herb);
+  ASSERT_TRUE(planner2->CopyRobot(herb));
+  ASSERT_TRUE(left_arm);
+  herb->SetActiveDOFs(left_arm->GetArmIndices());
+  herb->SetActiveDOFValues(left_arm_config); 
+  ASSERT_TRUE(right_arm);
+  herb->SetActiveDOFs(right_arm->GetArmIndices());
+
+  EXPECT_FALSE(planner2->IsActiveRobotConfigurationInCollision(no_collision_config));
+  EXPECT_TRUE(planner2->IsActiveRobotConfigurationInCollision(collision_config));
 }
