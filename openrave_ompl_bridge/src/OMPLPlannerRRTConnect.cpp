@@ -276,7 +276,7 @@ namespace openrave_ompl_bridge
       values.push_back(realVectorState->values[i]);
     }
 
-    return CheckForRobotCollisions(values);
+    return IsActiveRobotConfigurationInCollision(values);
   }
 
   unsigned int OMPLPlannerRRTConnect::GetRobotDOF()
@@ -304,13 +304,13 @@ namespace openrave_ompl_bridge
     return true;
   }
 
-  bool OMPLPlannerRRTConnect::CheckForRobotCollisions(std::vector<double>& joint_values)
+  bool OMPLPlannerRRTConnect::IsActiveRobotConfigurationInCollision(std::vector<double>& joint_values)
   {
     assert(robot_);
     assert(joint_values.size() == GetRobotDOF());
 
     OpenRAVE::EnvironmentMutex::scoped_lock lockenv(GetEnv()->GetMutex());
     robot_->SetActiveDOFValues(joint_values);
-    return GetEnv()->CheckCollision(KinBodyConstPtr(robot_)) || robot_->CheckSelfCollision();
+    return (GetEnv()->CheckCollision(KinBodyConstPtr(robot_)) || robot_->CheckSelfCollision());
   }
 } /* namespace openrave_ompl_bridge */

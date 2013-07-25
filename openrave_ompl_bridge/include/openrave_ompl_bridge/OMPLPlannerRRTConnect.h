@@ -68,7 +68,7 @@ namespace openrave_ompl_bridge
       unsigned int GetRobotDOF();
       bool HasActiveRobotDOF();
       bool GetRobotActiveJointLimits(std::vector<double>& lower, std::vector<double>& upper);
-      bool CheckForRobotCollisions(std::vector<double>& joint_values);
+      bool IsActiveRobotConfigurationInCollision(std::vector<double>& joint_values);
 
     private:  
       // internal members...
