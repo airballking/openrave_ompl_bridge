@@ -86,6 +86,7 @@ namespace openrave_ompl_bridge
       return false;
     }
 
+    parameters_.reset(new OMPLPlannerParametersRRTConnect());
     parameters_->copy(parameters);
     return true;
   }
