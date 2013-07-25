@@ -4,6 +4,7 @@
 
 #include <openrave-core.h>
 #include <openrave_ompl_bridge/OMPLPlannerRRTConnect.h>
+#include <openrave_ompl_bridge/OMPLPlannerParametersRRTConnect.h>
 
 using namespace openrave_ompl_bridge;
 
@@ -16,6 +17,7 @@ class PlannerTest : public ::testing::Test
       CreatePlanner();
       LoadRobot();
       GetManipulators();    
+      CreateParameters();
     }
 
     void GetRaveEnvironment()
@@ -32,6 +34,29 @@ class PlannerTest : public ::testing::Test
         planner = OpenRAVE::RaveCreatePlanner(env, "omplrrtconnect");
         planner2 = boost::static_pointer_cast<openrave_ompl_bridge::OMPLPlannerRRTConnect>(planner);
       }
+    }
+
+    void CreateParameters()
+    {
+      parameters = OMPLPlannerParametersRRTConnectPtr(new OMPLPlannerParametersRRTConnect());
+
+      herb->SetActiveDOFs(right_arm->GetArmIndices());
+      parameters->SetRobotActiveJoints(herb);
+
+      parameters->timelimit = 5.0;
+
+      parameters->vinitialconfig.clear();
+      herb->GetActiveDOFValues(parameters->vinitialconfig);
+
+      parameters->vgoalconfig.clear();
+      for(unsigned int i=0; i<herb->GetActiveDOF(); i++)
+        parameters->vinitialconfig.push_back(1.0);
+
+      std::vector<int> joint_indices;
+      for (unsigned int i=0; i<herb->GetJoints().size(); i++)
+        joint_indices.push_back((int)i);
+      herb->SetActiveDOFs(joint_indices);
+
     }
 
     void LoadRobot()
@@ -77,6 +102,7 @@ class PlannerTest : public ::testing::Test
     OpenRAVE::RobotBase::ManipulatorPtr right_arm, left_arm, head;
     OpenRAVE::PlannerBasePtr planner;
     OMPLPlannerRRTConnectPtr planner2;
+    OMPLPlannerParametersRRTConnectPtr parameters;
 };
 
 TEST_F(PlannerTest, CopyRobot)
@@ -166,4 +192,24 @@ TEST_F(PlannerTest, CheckForRobotCollisions)
 
   EXPECT_FALSE(planner2->IsActiveRobotConfigurationInCollision(no_collision_config));
   EXPECT_TRUE(planner2->IsActiveRobotConfigurationInCollision(collision_config));
+}
+
+TEST_F(PlannerTest, CopyParameters)
+{
+  ASSERT_TRUE(planner2);
+  ASSERT_TRUE(herb);
+  ASSERT_TRUE(right_arm);
+  ASSERT_TRUE(parameters);
+  herb->SetActiveDOFs(right_arm->GetArmIndices());
+  EXPECT_TRUE(planner2->CopyParameters(parameters));
+}
+
+TEST_F(PlannerTest, InitPlan)
+{
+  ASSERT_TRUE(planner2);
+  ASSERT_TRUE(herb);
+  ASSERT_TRUE(right_arm);
+  ASSERT_TRUE(parameters);
+  herb->SetActiveDOFs(right_arm->GetArmIndices());
+  EXPECT_TRUE(planner->InitPlan(herb, parameters));
 }
