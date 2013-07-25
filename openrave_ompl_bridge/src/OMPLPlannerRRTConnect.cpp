@@ -7,7 +7,7 @@ using namespace OpenRAVE;
 namespace openrave_ompl_bridge
 {
   OMPLPlannerRRTConnect::OMPLPlannerRRTConnect(OpenRAVE::EnvironmentBasePtr penv) : OpenRAVE::PlannerBase(penv), 
-      state_space_(new ompl::base::RealVectorStateSpace(0))
+      state_space_(new ompl::base::RealVectorStateSpace(0)), parameters_(new OMPLPlannerParametersRRTConnect())
   {
   }
 
