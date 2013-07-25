@@ -50,7 +50,7 @@ class PlannerTest : public ::testing::Test
 
       parameters->vgoalconfig.clear();
       for(unsigned int i=0; i<herb->GetActiveDOF(); i++)
-        parameters->vinitialconfig.push_back(1.0);
+        parameters->vgoalconfig.push_back(1.0);
 
       std::vector<int> joint_indices;
       for (unsigned int i=0; i<herb->GetJoints().size(); i++)
@@ -204,6 +204,52 @@ TEST_F(PlannerTest, CopyParameters)
   EXPECT_TRUE(planner2->CopyParameters(parameters));
 }
 
+TEST_F(PlannerTest, ResetStateSpaceDimensions)
+{
+  ASSERT_TRUE(planner2);
+  ASSERT_TRUE(herb);
+  ASSERT_TRUE(right_arm);
+  ASSERT_TRUE(parameters);
+  herb->SetActiveDOFs(right_arm->GetArmIndices());
+  ASSERT_TRUE(planner2->CopyRobot(herb));
+  ASSERT_TRUE(planner2->CopyParameters(parameters));
+  EXPECT_TRUE(planner2->ResetStateSpaceDimensions());
+}
+
+TEST_F(PlannerTest, ResetStateSpaceBoundaries)
+{
+  ASSERT_TRUE(planner2);
+  ASSERT_TRUE(herb);
+  ASSERT_TRUE(right_arm);
+  ASSERT_TRUE(parameters);
+  herb->SetActiveDOFs(right_arm->GetArmIndices());
+  ASSERT_TRUE(planner2->CopyRobot(herb));
+  ASSERT_TRUE(planner2->CopyParameters(parameters));
+  ASSERT_TRUE(planner2->ResetStateSpaceDimensions());
+  ASSERT_EQ(herb->GetActiveDOF(), parameters->GetStartConfiguration().size());
+  ASSERT_EQ(herb->GetActiveDOF(), parameters->GetGoalConfiguration().size());
+  ASSERT_EQ(herb->GetActiveDOF(), planner2->GetStateSpaceDimensions());
+  ASSERT_EQ(7, parameters->GetStartConfiguration().size());
+  ASSERT_EQ(7, parameters->GetGoalConfiguration().size());
+  ASSERT_EQ(7, planner2->GetStateSpaceDimensions());
+  EXPECT_TRUE(planner2->ResetStateSpaceBoundaries());
+}
+
+TEST_F(PlannerTest, ResetSimpleSetup)
+{
+  ASSERT_TRUE(planner2);
+  ASSERT_TRUE(herb);
+  ASSERT_TRUE(right_arm);
+  ASSERT_TRUE(parameters);
+  herb->SetActiveDOFs(right_arm->GetArmIndices());
+  ASSERT_TRUE(planner2->CopyRobot(herb));
+  ASSERT_TRUE(planner2->CopyParameters(parameters));
+  ASSERT_TRUE(planner2->ResetStateSpaceDimensions());
+  ASSERT_TRUE(planner2->ResetStateSpaceBoundaries());
+  planner2->ResetSimpleSetup();
+  EXPECT_TRUE(true);
+}
+
 TEST_F(PlannerTest, InitPlan)
 {
   ASSERT_TRUE(planner2);
@@ -211,5 +257,5 @@ TEST_F(PlannerTest, InitPlan)
   ASSERT_TRUE(right_arm);
   ASSERT_TRUE(parameters);
   herb->SetActiveDOFs(right_arm->GetArmIndices());
-  EXPECT_TRUE(planner->InitPlan(herb, parameters));
+  EXPECT_TRUE(planner2->InitPlan(herb, parameters));
 }
