@@ -10,6 +10,8 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 
 #common commands for building c++ executables and libraries
 rosbuild_add_library(${PROJECT_NAME} src/OMPLPlannersMain.cpp src/OMPLPlannerRRTConnect.cpp src/OMPLPlannerParametersRRTConnect.cpp)
+
+rosbuild_add_library(NO_PLUGIN src/OMPLPlannerRRTConnect.cpp src/OMPLPlannerParametersRRTConnect.cpp)
 #target_link_libraries(${PROJECT_NAME} another_library)
 #rosbuild_add_boost_directories()
 #rosbuild_link_boost(${PROJECT_NAME} thread)
@@ -21,4 +23,4 @@ target_link_libraries(${PROJECT_NAME} ompl)
 # UNIT TESTING
 #SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
 rosbuild_add_gtest(test/unit_tests test/UnitTests.cpp test/PluginTests.cpp test/RRTConnectParameters.cpp test/RRTConnectPlanner.cpp)
-target_link_libraries(test/unit_tests ompl ${PROJECT_NAME})
+target_link_libraries(test/unit_tests ompl NO_PLUGIN)
