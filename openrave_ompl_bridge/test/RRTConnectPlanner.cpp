@@ -259,3 +259,15 @@ TEST_F(PlannerTest, InitPlan)
   herb->SetActiveDOFs(right_arm->GetArmIndices());
   EXPECT_TRUE(planner2->InitPlan(herb, parameters));
 }
+
+TEST_F(PlannerTest, PlanPath)
+{
+  ASSERT_TRUE(planner2);
+  ASSERT_TRUE(herb);
+  ASSERT_TRUE(right_arm);
+  ASSERT_TRUE(parameters);
+  herb->SetActiveDOFs(right_arm->GetArmIndices());
+  ASSERT_TRUE(planner2->InitPlan(herb, parameters));
+  OpenRAVE::TrajectoryBasePtr trajectory = OpenRAVE::RaveCreateTrajectory(env, planner2->GetRobotDOF());
+  EXPECT_EQ(OpenRAVE::PS_HasSolution, planner2->PlanPath(trajectory));
+}
