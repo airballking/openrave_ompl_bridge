@@ -6,7 +6,7 @@
 #include <openrave/planner.h>
 
 // our parameter object
-#include <openrave_ompl_bridge/OMPLPlannerParametersRRTConnect.h>
+#include <openrave_ompl_bridge/RRTConnectParameters.h>
 
 // a convenience wrapper around OpenRAVE's RobotBase
 #include <openrave_ompl_bridge/Robot.h>

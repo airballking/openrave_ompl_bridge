@@ -1,5 +1,5 @@
 #include <openrave/plugin.h>
-#include <openrave_ompl_bridge/OMPLPlannerRRTConnect.h>
+#include <openrave_ompl_bridge/RRTConnect.h>
 
 using namespace OpenRAVE;
 

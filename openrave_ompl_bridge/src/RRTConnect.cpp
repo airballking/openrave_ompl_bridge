@@ -1,4 +1,4 @@
-#include <openrave_ompl_bridge/OMPLPlannerRRTConnect.h>
+#include <openrave_ompl_bridge/RRTConnect.h>
 
 #include <ompl/base/spaces/RealVectorStateSpace.h>
 
