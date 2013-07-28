@@ -22,6 +22,8 @@ namespace openrave_ompl_bridge
       
       OpenRAVE::ConfigurationSpecification getConfigurationSpec();
 
+      OpenRAVE::RobotBaseConstPtr getRobotPointer();
+
     private:
       OpenRAVE::RobotBasePtr robot_;
       std::vector<double> helper_dof_values_, helper_lower_limits_, helper_upper_limits_;

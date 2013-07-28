@@ -68,5 +68,9 @@ namespace openrave_ompl_bridge
     return robot_->GetActiveConfigurationSpecification();
   }
 
+  OpenRAVE::RobotBaseConstPtr Robot::getRobotPointer()
+  {
+    return robot_;
+  }
 
 } /* namespace openrave_ompl_bridge */
