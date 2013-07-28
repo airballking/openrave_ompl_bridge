@@ -19,6 +19,8 @@ namespace openrave_ompl_bridge
       const std::vector<double>& getUpperJointLimits();
 
       bool isInSelfCollision();
+      
+      OpenRAVE::ConfigurationSpecification getConfigurationSpec();
 
     private:
       OpenRAVE::RobotBasePtr robot_;

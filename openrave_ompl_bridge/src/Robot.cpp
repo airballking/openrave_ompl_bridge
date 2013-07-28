@@ -6,6 +6,8 @@ namespace openrave_ompl_bridge
 {
   Robot::Robot(RobotBasePtr robot)
   {
+    assert(robot);
+
     robot_ = robot;
   }
 
@@ -54,6 +56,17 @@ namespace openrave_ompl_bridge
 
   bool Robot::isInSelfCollision()
   {
+    assert(robot_);
+
     return robot_->CheckSelfCollision();
   }
+
+  OpenRAVE::ConfigurationSpecification Robot::getConfigurationSpec()
+  {
+    assert(robot_);
+
+    return robot_->GetActiveConfigurationSpecification();
+  }
+
+
 } /* namespace openrave_ompl_bridge */
