@@ -2,11 +2,11 @@
 
 namespace openrave_ompl_bridge
 {
-  OMPLPlannerParametersRRTConnect::OMPLPlannerParametersRRTConnect() 
+  RRTConnectParameters::RRTConnectParameters() 
   {
   }
 
-  bool OMPLPlannerParametersRRTConnect::serialize(std::ostream& O) const
+  bool RRTConnectParameters::serialize(std::ostream& O) const
   {
     if (!PlannerParameters::serialize(O))
     {    
@@ -15,7 +15,7 @@ namespace openrave_ompl_bridge
     return true;
   }
 
-  OpenRAVE::BaseXMLReader::ProcessElement OMPLPlannerParametersRRTConnect::startElement(const std::string& name, const std::list<std::pair<std::string, std::string> >& atts)
+  OpenRAVE::BaseXMLReader::ProcessElement RRTConnectParameters::startElement(const std::string& name, const std::list<std::pair<std::string, std::string> >& atts)
   {
     switch (OpenRAVE::PlannerBase::PlannerParameters::startElement(name, atts))
     {
@@ -30,22 +30,22 @@ namespace openrave_ompl_bridge
     return OpenRAVE::BaseXMLReader::PE_Ignore;
   }
 
-  bool OMPLPlannerParametersRRTConnect::endElement(const std::string& name)
+  bool RRTConnectParameters::endElement(const std::string& name)
   {
     return PlannerParameters::endElement(name);
   }
 
-  std::vector<double> OMPLPlannerParametersRRTConnect::GetStartConfiguration()
+  std::vector<double> RRTConnectParameters::GetStartConfiguration()
   {
     return vinitialconfig;
   }
 
-  std::vector<double> OMPLPlannerParametersRRTConnect::GetGoalConfiguration()
+  std::vector<double> RRTConnectParameters::GetGoalConfiguration()
   {
     return vgoalconfig;
   }
 
-  double OMPLPlannerParametersRRTConnect::GetTimeLimit()
+  double RRTConnectParameters::GetTimeLimit()
   {
     return timelimit;
   }

@@ -1,5 +1,5 @@
-#ifndef OPENRAVE_OMPL_BRIDGE_OMPL_PLANNER_RTT_CONNECT_H
-#define OPENRAVE_OMPL_BRIDGE_OMPL_PLANNER_RTT_CONNECT_H
+#ifndef OPENRAVE_OMPL_BRIDGE_CONNECT_H
+#define OPENRAVE_OMPL_BRIDGE_RTT_CONNECT_H
 
 // basic openrave-stuff to wrap us in an OpenRAVE planner plugin
 #include <openrave-core.h>
@@ -25,13 +25,13 @@ namespace openrave_ompl_bridge
   typedef boost::shared_ptr<ompl::geometric::SimpleSetup> OMPLSimpleSetupPtr;
 
   // plugin exposing the RRTConnect motion planner from the OMPL library to OpenRAVE
-  class OMPLPlannerRRTConnect: public OpenRAVE::PlannerBase
+  class RRTConnect: public OpenRAVE::PlannerBase
   {
     public:
       /* THE STANDARD OPENRAVE PLANNER PLUGIN INTERFACE */
       // constructor and destructor required to declare and implement for planner plugin in OpenRAVE
-      OMPLPlannerRRTConnect(OpenRAVE::EnvironmentBasePtr penv);
-      virtual ~OMPLPlannerRRTConnect();
+      RRTConnect(OpenRAVE::EnvironmentBasePtr penv);
+      virtual ~RRTConnect();
 
       // two ways of initializing a planning problem: (1) a parameters-object (2) parameters in xml-stream
       virtual bool InitPlan(OpenRAVE::RobotBasePtr robot, OpenRAVE::PlannerBase::PlannerParametersConstPtr params);
@@ -70,14 +70,14 @@ namespace openrave_ompl_bridge
 
     private:  
       // internal members...
-      OMPLPlannerParametersRRTConnectPtr parameters_;
+      RRTConnectParametersPtr parameters_;
       RobotPtr robot_;
       OMPLSimpleSetupPtr simple_setup_;
       ompl::base::StateSpacePtr state_space_;
   };
 
   // convenience typedef for shared pointers to objects of this class
-  typedef boost::shared_ptr<OMPLPlannerRRTConnect> OMPLPlannerRRTConnectPtr;
+  typedef boost::shared_ptr<RRTConnect> RRTConnectPtr;
 } //namespace openrave_ompl_bridge
 
-#endif //OPENRAVE_OMPL_BRIDGE_OMPL_PLANNER_RTT_CONNECT_H
+#endif //OPENRAVE_OMPL_BRIDGE_RTT_CONNECT_H

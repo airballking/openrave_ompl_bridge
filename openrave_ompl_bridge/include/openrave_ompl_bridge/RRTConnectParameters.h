@@ -1,5 +1,5 @@
-#ifndef OPENRAVE_OMPL_BRIDGE_OMPL_PLAN_PARAMETERS_RRT_CONNECT_H
-#define OPENRAVE_OMPL_BRIDGE_OMPL_PLAN_PARAMETERS_RRT_CONNECT_H
+#ifndef OPENRAVE_OMPL_BRIDGE_RRT_CONNECT_PARAMETERS_H
+#define OPENRAVE_OMPL_BRIDGE_RRT_CONNECT_PARAMETERS_H
 
 #include <openrave-core.h>
 #include <openrave/planner.h>
@@ -9,11 +9,11 @@
 namespace openrave_ompl_bridge
 {
   // a calls to hold the parameters for the RRTConnect algorithm in the OMPL library
-  class OMPLPlannerParametersRRTConnect: public OpenRAVE::PlannerBase::PlannerParameters
+  class RRTConnectParameters: public OpenRAVE::PlannerBase::PlannerParameters
   {
     public:
       // well, the default constructor of this class ;)
-      OMPLPlannerParametersRRTConnect();
+      RRTConnectParameters();
    
       // accessors to parameters of interest to others 
       std::vector<double> GetStartConfiguration();
@@ -36,7 +36,7 @@ namespace openrave_ompl_bridge
   };
 
   // useful typedef for pointers to objects of this class
-  typedef boost::shared_ptr<OMPLPlannerParametersRRTConnect> OMPLPlannerParametersRRTConnectPtr;
+  typedef boost::shared_ptr<RRTConnectParameters> RRTConnectParametersPtr;
 } //namespace openrave_ompl_bridge
 
-#endif // OPENRAVE_OMPL_BRIDGE_OMPL_PLAN_PARAMETERS_RRT_CONNECT_H
+#endif // OPENRAVE_OMPL_BRIDGE_RRT_CONNECT_PARAMTERS_H

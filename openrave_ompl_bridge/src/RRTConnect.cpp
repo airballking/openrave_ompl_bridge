@@ -6,15 +6,15 @@ using namespace OpenRAVE;
 
 namespace openrave_ompl_bridge
 {
-  OMPLPlannerRRTConnect::OMPLPlannerRRTConnect(OpenRAVE::EnvironmentBasePtr penv) : OpenRAVE::PlannerBase(penv), parameters_(new OMPLPlannerParametersRRTConnect()), state_space_(new ompl::base::RealVectorStateSpace(0))
+  RRTConnect::RRTConnect(OpenRAVE::EnvironmentBasePtr penv) : OpenRAVE::PlannerBase(penv), parameters_(new RRTConnectParameters()), state_space_(new ompl::base::RealVectorStateSpace(0))
   {
   }
 
-  OMPLPlannerRRTConnect::~OMPLPlannerRRTConnect()
+  RRTConnect::~RRTConnect()
   {
   }
 
-  bool OMPLPlannerRRTConnect::InitPlan(OpenRAVE::RobotBasePtr robot, OpenRAVE::PlannerBase::PlannerParametersConstPtr params)
+  bool RRTConnect::InitPlan(OpenRAVE::RobotBasePtr robot, OpenRAVE::PlannerBase::PlannerParametersConstPtr params)
   {
     robot_ = RobotPtr(new Robot(robot));
 
@@ -29,14 +29,14 @@ namespace openrave_ompl_bridge
     return true;
   }
 
-  bool OMPLPlannerRRTConnect::InitPlan(OpenRAVE::RobotBasePtr robot, std::istream& input)
+  bool RRTConnect::InitPlan(OpenRAVE::RobotBasePtr robot, std::istream& input)
   {
-    OMPLPlannerParametersRRTConnect* parameters = new OMPLPlannerParametersRRTConnect();
+    RRTConnectParameters* parameters = new RRTConnectParameters();
     input >> (*parameters);
     return InitPlan(robot, OpenRAVE::PlannerBase::PlannerParametersConstPtr(parameters));
   }
 
-  OpenRAVE::PlannerStatus OMPLPlannerRRTConnect::PlanPath (OpenRAVE::TrajectoryBasePtr ptraj)
+  OpenRAVE::PlannerStatus RRTConnect::PlanPath (OpenRAVE::TrajectoryBasePtr ptraj)
   {
     assert(ptraj);
     assert(parameters_);
@@ -56,23 +56,23 @@ namespace openrave_ompl_bridge
     return OpenRAVE::PS_HasSolution;
   }
 
-  OpenRAVE::PlannerBase::PlannerParametersConstPtr OMPLPlannerRRTConnect::GetParameters () const
+  OpenRAVE::PlannerBase::PlannerParametersConstPtr RRTConnect::GetParameters () const
   {
     return parameters_;
   }
 
-  void OMPLPlannerRRTConnect::CopyParameters(OpenRAVE::PlannerBase::PlannerParametersConstPtr parameters)
+  void RRTConnect::CopyParameters(OpenRAVE::PlannerBase::PlannerParametersConstPtr parameters)
   {
-    parameters_.reset(new OMPLPlannerParametersRRTConnect());
+    parameters_.reset(new RRTConnectParameters());
     parameters_->copy(parameters);
   }
 
-  void OMPLPlannerRRTConnect::ResetStateSpaceDimensions()
+  void RRTConnect::ResetStateSpaceDimensions()
   {
     state_space_ = ompl::base::StateSpacePtr(new ompl::base::RealVectorStateSpace(robot_->getDOF()));
   }
 
-  void OMPLPlannerRRTConnect::ResetStateSpaceBoundaries()
+  void RRTConnect::ResetStateSpaceBoundaries()
   {
     ompl::base::RealVectorBounds bounds(robot_->getDOF());
     std::vector<double> lower_limits = robot_->getLowerJointLimits();
@@ -88,17 +88,17 @@ namespace openrave_ompl_bridge
     state_space_->as<ompl::base::RealVectorStateSpace>()->setBounds(bounds);
   }
 
-  void OMPLPlannerRRTConnect::ResetSimpleSetup()
+  void RRTConnect::ResetSimpleSetup()
   {
     assert(state_space_);
 
     simple_setup_ = OMPLSimpleSetupPtr(new ompl::geometric::SimpleSetup(state_space_));
-    simple_setup_->setStateValidityChecker(boost::bind(&openrave_ompl_bridge::OMPLPlannerRRTConnect::IsStateValid, this, _1));
+    simple_setup_->setStateValidityChecker(boost::bind(&openrave_ompl_bridge::RRTConnect::IsStateValid, this, _1));
     simple_setup_->setStartState(GetStartState());
     simple_setup_->setGoalState(GetGoalState());
   }
 
-  ompl::base::ScopedState<> OMPLPlannerRRTConnect::GetStartState()
+  ompl::base::ScopedState<> RRTConnect::GetStartState()
   {
     assert(state_space_);
     assert(parameters_);
@@ -116,7 +116,7 @@ namespace openrave_ompl_bridge
     return start;
   }
 
-  ompl::base::ScopedState<> OMPLPlannerRRTConnect::GetGoalState()
+  ompl::base::ScopedState<> RRTConnect::GetGoalState()
   {
     assert(state_space_);
     assert(parameters_);
@@ -134,14 +134,14 @@ namespace openrave_ompl_bridge
     return goal;
   }
 
-  unsigned int OMPLPlannerRRTConnect::GetStateSpaceDimensions()
+  unsigned int RRTConnect::GetStateSpaceDimensions()
   {
     assert(state_space_);
 
     return state_space_->as<ompl::base::RealVectorStateSpace>()->getDimension();
   }
 
-  bool OMPLPlannerRRTConnect::EnsureInitializedPlan()
+  bool RRTConnect::EnsureInitializedPlan()
   {
     if(!simple_setup_)
     {
@@ -152,13 +152,13 @@ namespace openrave_ompl_bridge
       return true;
   }
 
-  bool OMPLPlannerRRTConnect::SolveWithTimelimit(double timelimit)
+  bool RRTConnect::SolveWithTimelimit(double timelimit)
   {
     assert(simple_setup_);
     return simple_setup_->solve(timelimit);
   }
 
-  bool OMPLPlannerRRTConnect::SmoothenPath(double timelimit)
+  bool RRTConnect::SmoothenPath(double timelimit)
   {
     if(!EnsureSolutionPath())
       return false;
@@ -167,7 +167,7 @@ namespace openrave_ompl_bridge
     return true;
   }
 
-  bool OMPLPlannerRRTConnect::CopyFinalPath(OpenRAVE::TrajectoryBasePtr ptraj)
+  bool RRTConnect::CopyFinalPath(OpenRAVE::TrajectoryBasePtr ptraj)
   {
     assert(ptraj);
     
@@ -185,12 +185,12 @@ namespace openrave_ompl_bridge
     return true;
   }
 
-  void OMPLPlannerRRTConnect::InitSolutionPathContainer(OpenRAVE::TrajectoryBasePtr ptraj)
+  void RRTConnect::InitSolutionPathContainer(OpenRAVE::TrajectoryBasePtr ptraj)
   {
     ptraj->Init(robot_->getConfigurationSpec());
   }
 
-  bool OMPLPlannerRRTConnect::EnsureSolutionPath()
+  bool RRTConnect::EnsureSolutionPath()
   {
     assert(simple_setup_);
 
@@ -203,14 +203,14 @@ namespace openrave_ompl_bridge
     return true;
   }
 
-  std::vector<ompl::base::State*> OMPLPlannerRRTConnect::GetSolutionPath()
+  std::vector<ompl::base::State*> RRTConnect::GetSolutionPath()
   {
     assert(simple_setup_);
 
     return simple_setup_->getSolutionPath().getStates();
   }
 
-  OpenRAVE::TrajectoryBase::Point OMPLPlannerRRTConnect::TransformPathPoint(ompl::base::State* state)
+  OpenRAVE::TrajectoryBase::Point RRTConnect::TransformPathPoint(ompl::base::State* state)
   {
     const ompl::base::RealVectorStateSpace::StateType* state_cast = state->as<ompl::base::RealVectorStateSpace::StateType>();
 
@@ -224,7 +224,7 @@ namespace openrave_ompl_bridge
     return result;
   }
 
-  bool OMPLPlannerRRTConnect::IsStateValid(const ompl::base::State* state)
+  bool RRTConnect::IsStateValid(const ompl::base::State* state)
   {
     assert(state);
 
@@ -241,7 +241,7 @@ namespace openrave_ompl_bridge
     return IsActiveRobotConfigurationInCollision(values);
   }
 
-  bool OMPLPlannerRRTConnect::IsActiveRobotConfigurationInCollision(std::vector<double>& joint_values)
+  bool RRTConnect::IsActiveRobotConfigurationInCollision(std::vector<double>& joint_values)
   {
     assert(robot_);
 
