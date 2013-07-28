@@ -6,8 +6,7 @@ using namespace OpenRAVE;
 
 namespace openrave_ompl_bridge
 {
-  OMPLPlannerRRTConnect::OMPLPlannerRRTConnect(OpenRAVE::EnvironmentBasePtr penv) : OpenRAVE::PlannerBase(penv), 
-      state_space_(new ompl::base::RealVectorStateSpace(0)), parameters_(new OMPLPlannerParametersRRTConnect())
+  OMPLPlannerRRTConnect::OMPLPlannerRRTConnect(OpenRAVE::EnvironmentBasePtr penv) : OpenRAVE::PlannerBase(penv), parameters_(new OMPLPlannerParametersRRTConnect()), state_space_(new ompl::base::RealVectorStateSpace(0))
   {
   }
 
@@ -17,17 +16,13 @@ namespace openrave_ompl_bridge
 
   bool OMPLPlannerRRTConnect::InitPlan(OpenRAVE::RobotBasePtr robot, OpenRAVE::PlannerBase::PlannerParametersConstPtr params)
   {
-    if(!CopyRobot(robot))
-      return false;
+    robot_ = RobotPtr(new Robot(robot));
 
-    if(!CopyParameters(params))
-      return false;
+    CopyParameters(params);
 
-    if(!ResetStateSpaceDimensions())
-      return false;
+    ResetStateSpaceDimensions();
 
-    if(!ResetStateSpaceBoundaries())
-      return false;
+    ResetStateSpaceBoundaries();
 
     ResetSimpleSetup();
 
@@ -66,63 +61,31 @@ namespace openrave_ompl_bridge
     return parameters_;
   }
 
-  bool OMPLPlannerRRTConnect::CopyRobot(OpenRAVE::RobotBasePtr robot)
+  void OMPLPlannerRRTConnect::CopyParameters(OpenRAVE::PlannerBase::PlannerParametersConstPtr parameters)
   {
-    if(!robot)
-    {
-      RAVELOG_ERROR("Passed pointer to robot was NULL. Aborting!\n");
-      return false;
-    }
-    
-    robot_ = robot;
-    return true;
-  }
-
-  bool OMPLPlannerRRTConnect::CopyParameters(OpenRAVE::PlannerBase::PlannerParametersConstPtr parameters)
-  {
-    if(!parameters)
-    {
-      RAVELOG_ERROR("Passed pointer to parameters was NULL. Aborting!\n");
-      return false;
-    }
-
     parameters_.reset(new OMPLPlannerParametersRRTConnect());
     parameters_->copy(parameters);
-    return true;
   }
 
-  bool OMPLPlannerRRTConnect::ResetStateSpaceDimensions()
+  void OMPLPlannerRRTConnect::ResetStateSpaceDimensions()
   {
-    if(!HasActiveRobotDOF())
-      return false;
-    
-    state_space_ = ompl::base::StateSpacePtr(new ompl::base::RealVectorStateSpace(GetRobotDOF()));
-
-    return true; 
+    state_space_ = ompl::base::StateSpacePtr(new ompl::base::RealVectorStateSpace(robot_->getDOF()));
   }
 
-  bool OMPLPlannerRRTConnect::ResetStateSpaceBoundaries()
+  void OMPLPlannerRRTConnect::ResetStateSpaceBoundaries()
   {
-    if(!HasActiveRobotDOF())
-      return false;
-   
-    ompl::base::RealVectorBounds bounds(GetRobotDOF());
-    std::vector<double> lower_limits, upper_limits;
-    if(!GetRobotActiveJointLimits(lower_limits, upper_limits))
-      return false;
+    ompl::base::RealVectorBounds bounds(robot_->getDOF());
+    std::vector<double> lower_limits = robot_->getLowerJointLimits();
+    std::vector<double> upper_limits = robot_->getUpperJointLimits();
 
-    assert(GetRobotDOF() == lower_limits.size());
-    assert(GetRobotDOF() == upper_limits.size());
 
-    for (unsigned int i=0; i<GetRobotDOF(); i++)
-    {
-      bounds.setLow(i, lower_limits[i]);
-      bounds.setHigh(i, upper_limits[i]);
-    }
+    assert(robot_->getDOF() == lower_limits.size());
+    assert(robot_->getDOF() == upper_limits.size());
+
+    bounds.low = lower_limits;
+    bounds.high = upper_limits;
 
     state_space_->as<ompl::base::RealVectorStateSpace>()->setBounds(bounds);
-
-    return true; 
   }
 
   void OMPLPlannerRRTConnect::ResetSimpleSetup()
@@ -224,9 +187,7 @@ namespace openrave_ompl_bridge
 
   void OMPLPlannerRRTConnect::InitSolutionPathContainer(OpenRAVE::TrajectoryBasePtr ptraj)
   {
-    assert(robot_);
-
-    ptraj->Init(robot_->GetActiveConfigurationSpecification());
+    ptraj->Init(robot_->getConfigurationSpec());
   }
 
   bool OMPLPlannerRRTConnect::EnsureSolutionPath()
@@ -254,10 +215,10 @@ namespace openrave_ompl_bridge
     const ompl::base::RealVectorStateSpace::StateType* state_cast = state->as<ompl::base::RealVectorStateSpace::StateType>();
 
     assert(state_cast);
-    assert(GetStateSpaceDimensions() == GetRobotDOF());
+    assert(GetStateSpaceDimensions() == robot_->getDOF());
 
     OpenRAVE::TrajectoryBase::Point result;
-    for(unsigned int j = 0; j < GetRobotDOF(); j++)
+    for(unsigned int j = 0; j < robot_->getDOF(); j++)
       result.q.push_back((*state_cast)[j]);
 
     return result;
@@ -272,7 +233,7 @@ namespace openrave_ompl_bridge
     assert(realVectorState);
     
     std::vector<double> values;
-    for(unsigned int i = 0; i < GetRobotDOF(); i++)
+    for(unsigned int i = 0; i < robot_->getDOF(); i++)
     {
       values.push_back(realVectorState->values[i]);
     }
@@ -280,38 +241,12 @@ namespace openrave_ompl_bridge
     return IsActiveRobotConfigurationInCollision(values);
   }
 
-  unsigned int OMPLPlannerRRTConnect::GetRobotDOF()
-  {
-    if(!robot_)
-    {
-      RAVELOG_ERROR("No robot given to query for joints! \n");
-      return 0;
-    }
-
-    return robot_->GetActiveDOF();
-  }
-
-  bool OMPLPlannerRRTConnect::HasActiveRobotDOF()
-  {
-    return (GetRobotDOF() > 0);
-  }
-
-  bool OMPLPlannerRRTConnect::GetRobotActiveJointLimits(std::vector<double>& lower, std::vector<double>& upper)
-  {
-    if(!HasActiveRobotDOF())
-      return false;
-    
-    robot_->GetActiveDOFLimits(lower, upper);
-    return true;
-  }
-
   bool OMPLPlannerRRTConnect::IsActiveRobotConfigurationInCollision(std::vector<double>& joint_values)
   {
     assert(robot_);
-    assert(joint_values.size() == GetRobotDOF());
 
     OpenRAVE::EnvironmentMutex::scoped_lock lockenv(GetEnv()->GetMutex());
-    robot_->SetActiveDOFValues(joint_values);
-    return (GetEnv()->CheckCollision(KinBodyConstPtr(robot_)) || robot_->CheckSelfCollision());
+    robot_->setJointValues(joint_values);
+    return (GetEnv()->CheckCollision(KinBodyConstPtr(robot_->getRobotPointer())) || robot_->isInSelfCollision());
   }
 } /* namespace openrave_ompl_bridge */

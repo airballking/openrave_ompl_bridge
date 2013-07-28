@@ -8,6 +8,9 @@
 // our parameter object
 #include <openrave_ompl_bridge/OMPLPlannerParametersRRTConnect.h>
 
+// a convenience wrapper around OpenRAVE's RobotBase
+#include <openrave_ompl_bridge/Robot.h>
+
 // parts of OMPL we're using
 #include <ompl/geometric/SimpleSetup.h>
 #include <ompl/base/StateSpace.h>
@@ -42,10 +45,9 @@ namespace openrave_ompl_bridge
 
       /* OMPL- AND RRTCONNECT-SPECIFIC CODE */
       // internal helper functions for init...
-      bool CopyRobot(OpenRAVE::RobotBasePtr robot);
-      bool CopyParameters(OpenRAVE::PlannerBase::PlannerParametersConstPtr parameters);
-      bool ResetStateSpaceDimensions();
-      bool ResetStateSpaceBoundaries();
+      void CopyParameters(OpenRAVE::PlannerBase::PlannerParametersConstPtr parameters);
+      void ResetStateSpaceDimensions();
+      void ResetStateSpaceBoundaries();
       void ResetSimpleSetup();
       ompl::base::ScopedState<> GetStartState();
       ompl::base::ScopedState<> GetGoalState();
@@ -64,18 +66,14 @@ namespace openrave_ompl_bridge
       // helper functions required by OMPL
       bool IsStateValid(const ompl::base::State* state);
 
-      // internal robot helper functions...
-      unsigned int GetRobotDOF();
-      bool HasActiveRobotDOF();
-      bool GetRobotActiveJointLimits(std::vector<double>& lower, std::vector<double>& upper);
       bool IsActiveRobotConfigurationInCollision(std::vector<double>& joint_values);
 
     private:  
       // internal members...
       OMPLPlannerParametersRRTConnectPtr parameters_;
+      RobotPtr robot_;
       OMPLSimpleSetupPtr simple_setup_;
       ompl::base::StateSpacePtr state_space_;
-      OpenRAVE::RobotBasePtr robot_;
   };
 
   // convenience typedef for shared pointers to objects of this class

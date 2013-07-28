@@ -8,13 +8,12 @@ set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 #set the default path for built libraries to the "lib" directory
 set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 
-rosbuild_add_library(${PROJECT_NAME} src/Robot.cpp) 
+rosbuild_add_library(${PROJECT_NAME} src/Robot.cpp src/OMPLPlannerRRTConnect.cpp src/OMPLPlannerParametersRRTConnect.cpp) 
+target_link_libraries(${PROJECT_NAME} ompl)
 
 #rosbuild_add_library(${PROJECT_NAME} src/OMPLPlannersMain.cpp src/OMPLPlannerRRTConnect.cpp src/OMPLPlannerParametersRRTConnect.cpp)
 
 #rosbuild_add_library(NO_PLUGIN src/OMPLPlannerRRTConnect.cpp src/OMPLPlannerParametersRRTConnect.cpp)
-
-#target_link_libraries(${PROJECT_NAME} ompl)
 
 # UNIT TESTING
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
