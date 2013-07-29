@@ -9,7 +9,7 @@ InterfaceBasePtr CreateInterfaceValidated(InterfaceType type, const std::string&
 {
     if (type == PT_Planner && interfacename == "omplrrtconnect")
     {
-      return InterfaceBasePtr(new openrave_ompl_bridge::OMPLPlannerRRTConnect(penv));
+      return InterfaceBasePtr(new openrave_ompl_bridge::RRTConnect(penv));
     }
     // we did not fit requested planner plugin
     return InterfaceBasePtr();
