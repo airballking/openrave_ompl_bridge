@@ -1,6 +1,7 @@
 #include <openrave_ompl_bridge/RRTConnect.h>
 
 #include <ompl/base/spaces/RealVectorStateSpace.h>
+#include <ompl/geometric/planners/rrt/RRTConnect.h>
 
 using namespace OpenRAVE;
 
@@ -40,7 +41,9 @@ namespace openrave_ompl_bridge
     assert(parameters_);
     assert(simple_setup_);
 
-    if(!simple_setup_->solve(parameters_->GetTimeLimit()))
+    // TODO(GEORG): fix this after fixing parameter serialization/deserialization
+   // if(!simple_setup_->solve(parameters_->GetTimeLimit()))
+    if(!simple_setup_->solve())
       return OpenRAVE::PS_Failed;
 
     if(simple_setup_->haveSolutionPath())
@@ -90,8 +93,14 @@ namespace openrave_ompl_bridge
 
     simple_setup_ = OMPLSimpleSetupPtr(new ompl::geometric::SimpleSetup(state_space_));
     simple_setup_->setStateValidityChecker(boost::bind(&openrave_ompl_bridge::RRTConnect::IsStateValid, this, _1));
-    simple_setup_->setStartState(TransformState(parameters_->GetStartConfiguration()));
-    simple_setup_->setGoalState(TransformState(parameters_->GetGoalConfiguration()));
+    simple_setup_->setStartAndGoalStates(TransformState(parameters_->GetStartConfiguration()), TransformState(parameters_->GetGoalConfiguration()));
+
+
+    ompl::geometric::RRTConnect* rrtConnect = new ompl::geometric::RRTConnect(simple_setup_->getSpaceInformation());
+    ompl::base::PlannerPtr planner(rrtConnect);
+    //TODO(Georg): add parameter to object
+    //rrtConnect->setRange(m_parameters->m_rrtRange);
+    simple_setup_->setPlanner(planner);
   }
 
   ompl::base::ScopedState<> RRTConnect::TransformState(const std::vector<double>& state)
