@@ -2,8 +2,9 @@
 
 namespace openrave_ompl_bridge
 {
-  RRTConnectParameters::RRTConnectParameters() 
+  RRTConnectParameters::RRTConnectParameters() : is_processing(false) 
   {
+    _vXMLParameters.push_back("timelimit");
   }
 
   bool RRTConnectParameters::serialize(std::ostream& O) const
@@ -12,12 +13,18 @@ namespace openrave_ompl_bridge
     {    
       return false;
     }
-    return true;
+
+    O << "<timelimit>" << timelimit << "</timelimit>" << std::endl;
+
+    return !!O;
   }
 
   OpenRAVE::BaseXMLReader::ProcessElement RRTConnectParameters::startElement(const std::string& name, const std::list<std::pair<std::string, std::string> >& atts)
   {
-    switch (OpenRAVE::PlannerBase::PlannerParameters::startElement(name, atts))
+   if (is_processing)
+     return PE_Ignore;
+
+   switch (OpenRAVE::PlannerBase::PlannerParameters::startElement(name, atts))
     {
       case PE_Pass:
         break;
@@ -27,11 +34,27 @@ namespace openrave_ompl_bridge
         return PE_Ignore;
     }
 
-    return OpenRAVE::BaseXMLReader::PE_Ignore;
+    is_processing =
+        name == "timelimit";
+
+    return is_processing ? PE_Support : PE_Pass;
   }
 
   bool RRTConnectParameters::endElement(const std::string& name)
   {
+    if (is_processing)
+    {
+      if (name == "timelimit")
+      {
+         _ss >> timelimit;
+      }
+      else
+      {
+        RAVELOG_WARN(str(boost::format("unknown tag %s\n") % name));
+      }
+      is_processing = false;
+      return false;
+    }
     return PlannerParameters::endElement(name);
   }
 
