@@ -43,32 +43,23 @@ namespace openrave_ompl_bridge
       // getter for the current specification of the planning problem
       virtual OpenRAVE::PlannerBase::PlannerParametersConstPtr GetParameters () const;
 
+    private:
       /* OMPL- AND RRTCONNECT-SPECIFIC CODE */
       // internal helper functions for init...
       void CopyParameters(OpenRAVE::PlannerBase::PlannerParametersConstPtr parameters);
-      void ResetStateSpaceDimensions();
-      void ResetStateSpaceBoundaries();
+      void ResetStateSpace();
       void ResetSimpleSetup();
-      ompl::base::ScopedState<> GetStartState();
-      ompl::base::ScopedState<> GetGoalState();
+      ompl::base::ScopedState<> TransformState(const std::vector<double>& state);
       unsigned int GetStateSpaceDimensions();
 
-      //internal helper functions for plan...
-      bool EnsureInitializedPlan();
-      bool SolveWithTimelimit(double timelimit);
-      bool SmoothenPath(double timelimit = 0.0);
-      bool CopyFinalPath(OpenRAVE::TrajectoryBasePtr ptraj);
-      bool EnsureSolutionPath();
-      std::vector<ompl::base::State*> GetSolutionPath();
-      void InitSolutionPathContainer(OpenRAVE::TrajectoryBasePtr ptraj);
+      //internal helper functions for PlanPath...
+      void CopyFinalPath(OpenRAVE::TrajectoryBasePtr ptraj);
       OpenRAVE::TrajectoryBase::Point TransformPathPoint(ompl::base::State* state);
 
       // helper functions required by OMPL
       bool IsStateValid(const ompl::base::State* state);
-
       bool IsActiveRobotConfigurationInCollision(std::vector<double>& joint_values);
 
-    private:  
       // internal members...
       RRTConnectParametersPtr parameters_;
       RobotPtr robot_;

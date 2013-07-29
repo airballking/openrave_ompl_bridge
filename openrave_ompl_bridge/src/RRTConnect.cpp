@@ -20,9 +20,7 @@ namespace openrave_ompl_bridge
 
     CopyParameters(params);
 
-    ResetStateSpaceDimensions();
-
-    ResetStateSpaceBoundaries();
+    ResetStateSpace();
 
     ResetSimpleSetup();
 
@@ -40,18 +38,20 @@ namespace openrave_ompl_bridge
   {
     assert(ptraj);
     assert(parameters_);
+    assert(simple_setup_);
 
-    if(!EnsureInitializedPlan())
+    if(!simple_setup_->solve(parameters_->GetTimeLimit()))
       return OpenRAVE::PS_Failed;
 
-    if(!SolveWithTimelimit(parameters_->GetTimeLimit()))
+    if(simple_setup_->haveSolutionPath())
+    {
+      simple_setup_->simplifySolution(parameters_->GetTimeLimit());
+      CopyFinalPath(ptraj);
+    }
+    else
+    {
       return OpenRAVE::PS_Failed;
-
-    if(!SmoothenPath())
-      return OpenRAVE::PS_Failed;
-
-    if(!CopyFinalPath(ptraj))
-      return OpenRAVE::PS_Failed;
+    }
 
     return OpenRAVE::PS_HasSolution;
   }
@@ -67,17 +67,13 @@ namespace openrave_ompl_bridge
     parameters_->copy(parameters);
   }
 
-  void RRTConnect::ResetStateSpaceDimensions()
+  void RRTConnect::ResetStateSpace()
   {
     state_space_ = ompl::base::StateSpacePtr(new ompl::base::RealVectorStateSpace(robot_->getDOF()));
-  }
 
-  void RRTConnect::ResetStateSpaceBoundaries()
-  {
     ompl::base::RealVectorBounds bounds(robot_->getDOF());
     std::vector<double> lower_limits = robot_->getLowerJointLimits();
     std::vector<double> upper_limits = robot_->getUpperJointLimits();
-
 
     assert(robot_->getDOF() == lower_limits.size());
     assert(robot_->getDOF() == upper_limits.size());
@@ -94,44 +90,24 @@ namespace openrave_ompl_bridge
 
     simple_setup_ = OMPLSimpleSetupPtr(new ompl::geometric::SimpleSetup(state_space_));
     simple_setup_->setStateValidityChecker(boost::bind(&openrave_ompl_bridge::RRTConnect::IsStateValid, this, _1));
-    simple_setup_->setStartState(GetStartState());
-    simple_setup_->setGoalState(GetGoalState());
+    simple_setup_->setStartState(TransformState(parameters_->GetStartConfiguration()));
+    simple_setup_->setGoalState(TransformState(parameters_->GetGoalConfiguration()));
   }
 
-  ompl::base::ScopedState<> RRTConnect::GetStartState()
+  ompl::base::ScopedState<> RRTConnect::TransformState(const std::vector<double>& state)
   {
     assert(state_space_);
-    assert(parameters_);
    
-    std::vector<double> start_config = parameters_->GetStartConfiguration();
-    ompl::base::ScopedState<ompl::base::RealVectorStateSpace> start(state_space_);
+    ompl::base::ScopedState<ompl::base::RealVectorStateSpace> result(state_space_);
 
-    assert(start_config.size() == GetStateSpaceDimensions());
+    assert(state.size() == GetStateSpaceDimensions());
 
     for (unsigned int i=0; i<GetStateSpaceDimensions(); i++)
     {
-      start->values[i] = start_config[i];
+      result->values[i] = state[i];
     }
     
-    return start;
-  }
-
-  ompl::base::ScopedState<> RRTConnect::GetGoalState()
-  {
-    assert(state_space_);
-    assert(parameters_);
-   
-    std::vector<double> goal_config = parameters_->GetGoalConfiguration();
-    ompl::base::ScopedState<ompl::base::RealVectorStateSpace> goal(state_space_);
-
-    assert(goal_config.size() == GetStateSpaceDimensions());
-
-    for (unsigned int i=0; i<GetStateSpaceDimensions(); i++)
-    {
-      goal->values[i] = goal_config[i];
-    }
-    
-    return goal;
+    return result;
   }
 
   unsigned int RRTConnect::GetStateSpaceDimensions()
@@ -141,73 +117,19 @@ namespace openrave_ompl_bridge
     return state_space_->as<ompl::base::RealVectorStateSpace>()->getDimension();
   }
 
-  bool RRTConnect::EnsureInitializedPlan()
-  {
-    if(!simple_setup_)
-    {
-      RAVELOG_ERROR("Internal pointer to simple setup was NULL. Aborting!.\n");
-      return false;
-    }
-
-      return true;
-  }
-
-  bool RRTConnect::SolveWithTimelimit(double timelimit)
-  {
-    assert(simple_setup_);
-    return simple_setup_->solve(timelimit);
-  }
-
-  bool RRTConnect::SmoothenPath(double timelimit)
-  {
-    if(!EnsureSolutionPath())
-      return false;
-
-    simple_setup_->simplifySolution(timelimit);
-    return true;
-  }
-
-  bool RRTConnect::CopyFinalPath(OpenRAVE::TrajectoryBasePtr ptraj)
+  void RRTConnect::CopyFinalPath(OpenRAVE::TrajectoryBasePtr ptraj)
   {
     assert(ptraj);
-    
-    if(!EnsureSolutionPath())
-      return false;
+    assert(simple_setup_);
+  
+    ptraj->Init(robot_->getConfigurationSpec());
 
-    InitSolutionPathContainer(ptraj);
+    std::vector<ompl::base::State*> states = simple_setup_->getSolutionPath().getStates();
 
-    std::vector<ompl::base::State*> states = GetSolutionPath();
     for (unsigned int i=0; i<states.size(); i++)
     {
       ptraj->Insert(i, TransformPathPoint(states[i]).q, true);
     }
-    
-    return true;
-  }
-
-  void RRTConnect::InitSolutionPathContainer(OpenRAVE::TrajectoryBasePtr ptraj)
-  {
-    ptraj->Init(robot_->getConfigurationSpec());
-  }
-
-  bool RRTConnect::EnsureSolutionPath()
-  {
-    assert(simple_setup_);
-
-    if(!simple_setup_->haveSolutionPath())
-    {
-      RAVELOG_ERROR("Now solution path was found. Aborting!\n");
-      return false;
-    }
-
-    return true;
-  }
-
-  std::vector<ompl::base::State*> RRTConnect::GetSolutionPath()
-  {
-    assert(simple_setup_);
-
-    return simple_setup_->getSolutionPath().getStates();
   }
 
   OpenRAVE::TrajectoryBase::Point RRTConnect::TransformPathPoint(ompl::base::State* state)
@@ -238,7 +160,7 @@ namespace openrave_ompl_bridge
       values.push_back(realVectorState->values[i]);
     }
 
-    return IsActiveRobotConfigurationInCollision(values);
+    return !IsActiveRobotConfigurationInCollision(values);
   }
 
   bool RRTConnect::IsActiveRobotConfigurationInCollision(std::vector<double>& joint_values)
