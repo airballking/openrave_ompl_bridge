@@ -16,6 +16,7 @@ class ParameterTest : public ::testing::Test
       parameters = RRTConnectParametersPtr(new RRTConnectParameters());
       no_timeout = 1.0;
       some_timeout = 2.31;
+      some_timeout2 = 3.75;
 
       empty_joints.clear();
       full_joints.clear();
@@ -33,7 +34,7 @@ class ParameterTest : public ::testing::Test
 
     RRTConnectParametersPtr parameters;
     std::vector<double> empty_joints, full_joints;
-    double no_timeout, some_timeout;
+    double no_timeout, some_timeout, some_timeout2;
 
 };
 
@@ -59,23 +60,29 @@ TEST_F(ParameterTest, GetStartConfiguration)
     EXPECT_TRUE(parameters->GetStartConfiguration()[i] == full_joints[i]);
 }
 
-TEST_F(ParameterTest, GetTimeLimit)
+TEST_F(ParameterTest, GetTimeLimits)
 {
   parameters->timelimit=no_timeout;
+  parameters->smoothing_timelimit=some_timeout;
   EXPECT_EQ(no_timeout, parameters->GetTimeLimit());
+  EXPECT_EQ(some_timeout, parameters->GetSmoothingTimeLimit());
 
   parameters->timelimit=some_timeout;
+  parameters->smoothing_timelimit=some_timeout2;
   EXPECT_EQ(some_timeout, parameters->GetTimeLimit());
+  EXPECT_EQ(some_timeout2, parameters->GetSmoothingTimeLimit());
 }
 
 TEST_F(ParameterTest, CopyTypeCast)
 {
   parameters->timelimit = some_timeout;
+  parameters->smoothing_timelimit = some_timeout2;
 
   RRTConnectParametersPtr pointer2(new RRTConnectParameters());
   OpenRAVE::PlannerBase::PlannerParametersPtr base_pointer = boost::static_pointer_cast<OpenRAVE::PlannerBase::PlannerParameters>(parameters);
 
   pointer2->copy(base_pointer);
   EXPECT_EQ(some_timeout, pointer2->GetTimeLimit());
+  EXPECT_EQ(some_timeout2, pointer2->GetSmoothingTimeLimit());
 }
 
