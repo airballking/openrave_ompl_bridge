@@ -3,7 +3,7 @@
 #include <vector>
 
 #include <openrave-core.h>
-#include <openrave_ompl_bridge/OMPLPlannerParametersRRTConnect.h>
+#include <openrave_ompl_bridge/RRTConnectParameters.h>
 
 using namespace openrave_ompl_bridge;
 
@@ -13,7 +13,7 @@ class ParameterTest : public ::testing::Test
     virtual void SetUp()
     {
       OpenRAVE::RaveInitialize();
-      parameters = OMPLPlannerParametersRRTConnectPtr(new OMPLPlannerParametersRRTConnect());
+      parameters = RRTConnectParametersPtr(new RRTConnectParameters());
       no_timeout = 1.0;
       some_timeout = 2.31;
 
@@ -31,7 +31,7 @@ class ParameterTest : public ::testing::Test
       OpenRAVE::RaveDestroy();
     }
 
-    OMPLPlannerParametersRRTConnectPtr parameters;
+    RRTConnectParametersPtr parameters;
     std::vector<double> empty_joints, full_joints;
     double no_timeout, some_timeout;
 
@@ -62,8 +62,20 @@ TEST_F(ParameterTest, GetStartConfiguration)
 TEST_F(ParameterTest, GetTimeLimit)
 {
   parameters->timelimit=no_timeout;
-  EXPECT_TRUE(no_timeout == parameters->GetTimeLimit());
+  EXPECT_EQ(no_timeout, parameters->GetTimeLimit());
 
   parameters->timelimit=some_timeout;
-  EXPECT_TRUE(some_timeout == parameters->GetTimeLimit());
+  EXPECT_EQ(some_timeout, parameters->GetTimeLimit());
 }
+
+TEST_F(ParameterTest, CopyTypeCast)
+{
+  parameters->timelimit = some_timeout;
+
+  RRTConnectParametersPtr pointer2(new RRTConnectParameters());
+  OpenRAVE::PlannerBase::PlannerParametersPtr base_pointer = boost::static_pointer_cast<OpenRAVE::PlannerBase::PlannerParameters>(parameters);
+
+  pointer2->copy(base_pointer);
+  EXPECT_EQ(some_timeout, pointer2->GetTimeLimit());
+}
+
