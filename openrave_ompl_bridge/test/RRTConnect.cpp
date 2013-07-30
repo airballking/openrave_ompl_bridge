@@ -47,7 +47,7 @@ class PlannerTest : public ::testing::Test
       herb->GetActiveDOFValues(parameters->vinitialconfig);
 
       parameters->vgoalconfig.clear();
-      for(unsigned int i=0; i<herb->GetActiveDOF(); i++)
+      for(int i=0; i<herb->GetActiveDOF(); i++)
         parameters->vgoalconfig.push_back(1.0);
 
       std::vector<int> joint_indices;
@@ -87,6 +87,6 @@ TEST_F(PlannerTest, PlanPath)
   ASSERT_TRUE(parameters);
   herb->SetActiveDOFs(right_arm->GetArmIndices());
   ASSERT_TRUE(planner2->InitPlan(herb, parameters));
-  OpenRAVE::TrajectoryBasePtr trajectory = OpenRAVE::RaveCreateTrajectory(env, right_arm->GetArmIndices().size());
+  OpenRAVE::TrajectoryBasePtr trajectory = OpenRAVE::RaveCreateTrajectory(env);
   EXPECT_EQ(OpenRAVE::PS_HasSolution, planner2->PlanPath(trajectory));
 }
