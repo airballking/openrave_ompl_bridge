@@ -1,0 +1,57 @@
+**********************************
+* (1) State Space Representation *
+**********************************
+
+(1.1) The space itself.
+- The vectors of doubles:
+-- The first vector shall represent the joint sub-space.
+-- The second vector shall represent the constraint sub-space.
+- Joint without limits are represented as SO2StateSpaces in OMPL.
+-- The joint space differs for PR2 and HERB.
+
+(1.2) Sampling.
+- Randomized sampling shall only be done within the joint sub-space
+- The values of the constraint space directely follow out of the task function.
+-- TODO(GEORG): Does a function hook for this exist?
+
+(1.3) Validity checking.
+- Joint samples must fulfill joint limits and not be in collisions.
+- The constraint-values must fulfill any existing path-constraints.
+
+(1.4) Interpolation.
+- Interpolation should be attempted on small increments in joint space, followed by Jacobian-based projection on any path-constraints. 
+
+(1.5) Distance.
+- TODO(GEORG): Joint space distance?
+
+**********************************
+* (2) Goal Region Representation *
+**********************************
+
+(2.1) Goal Checking.
+- I will ignore any configuration-goals for the moment.
+- Goal checking can be done on the constraint-values using the task function approach.
+-- Requires all goal-constraints.
+-- TODO(GEORG): Check whether goal regions have access to a state space.
+
+(2.2) Sampling.
+- The task function itself does not allow direct sampling of joint states which are in the goal region.
+- One can sample joint states and Jacobian-project them back onto the goal region.
+-- TODO(GEORG): Duplicated functionality, here?
+- Dmitry sampled new goal samples with a probability P_goal to have several roots in the backwards tree. The regular RRTConnect seems to start with several goal states.
+-- TODO(GEORG): Check if RRTConnect already samples the goal region to create several goal states.
+
+(2.3) Distance.
+- TODO(GEORG): Distance from goal-constraints?
+
+**********************
+* (3) Path Smoothing *
+**********************
+
+(3.1) Distance.
+- Same as State Space.
+
+(3.2) Interpolation.
+- Same as State Space.
+
+TODO(GEORG): Check if path smoothing has direct access to State Space.
