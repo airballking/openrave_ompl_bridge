@@ -41,6 +41,7 @@ class PlannerTest : public ::testing::Test
       parameters->SetRobotActiveJoints(herb);
 
       parameters->timelimit = 3.0;
+      parameters->smoothing_timelimit = 1.0;
 
       parameters->vinitialconfig.clear();
       herb->GetActiveDOFValues(parameters->vinitialconfig);

@@ -46,8 +46,7 @@ namespace openrave_ompl_bridge
 
     if(simple_setup_->haveSolutionPath())
     {
-      //TODO(Georg): add separate timeout parameter for this
-      simple_setup_->simplifySolution(parameters_->GetTimeLimit());
+      simple_setup_->simplifySolution(parameters_->GetSmoothingTimeLimit());
       CopyFinalPath(ptraj);
     }
     else
