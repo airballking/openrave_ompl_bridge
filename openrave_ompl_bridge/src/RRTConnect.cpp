@@ -41,7 +41,7 @@ namespace openrave_ompl_bridge
     assert(parameters_);
     assert(simple_setup_);
 
-    if(!simple_setup_->solve(parameters_->GetTimeLimit()))
+    if(!simple_setup_->solve(parameters_->GetPlanningTimeLimit()))
       return OpenRAVE::PS_Failed;
 
     if(simple_setup_->haveSolutionPath())

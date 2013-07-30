@@ -4,7 +4,7 @@ namespace openrave_ompl_bridge
 {
   RRTConnectParameters::RRTConnectParameters() : is_processing(false) 
   {
-    _vXMLParameters.push_back("timelimit");
+    _vXMLParameters.push_back("planning_timelimit");
     _vXMLParameters.push_back("smoothing_timelimit");
 
   }
@@ -16,7 +16,7 @@ namespace openrave_ompl_bridge
       return false;
     }
 
-    O << "<timelimit>" << timelimit << "</timelimit>" << std::endl;
+    O << "<planning_timelimit>" << planning_timelimit << "</planning_timelimit>" << std::endl;
     O << "<smoothing_timelimit>" << smoothing_timelimit << "</smoothing_timelimit>" << std::endl;
 
     if( !(options & 1) ) 
@@ -41,7 +41,7 @@ namespace openrave_ompl_bridge
       case PE_Ignore: return PE_Ignore;
     }
  
-    is_processing = name=="timelimit" || name=="smoothing_timelimit";
+    is_processing = name=="planning_timelimit" || name=="smoothing_timelimit";
 
     return is_processing ? PE_Support : PE_Pass;
   }
@@ -50,9 +50,9 @@ namespace openrave_ompl_bridge
   {
     if( is_processing ) 
     {
-      if( name == "timelimit") 
+      if( name == "planning_timelimit") 
       {
-        _ss >> timelimit;
+        _ss >> planning_timelimit;
       }
       else if( name == "smoothing_timelimit") 
       {
@@ -81,9 +81,9 @@ namespace openrave_ompl_bridge
     return vgoalconfig;
   }
 
-  double RRTConnectParameters::GetTimeLimit()
+  double RRTConnectParameters::GetPlanningTimeLimit()
   {
-    return timelimit;
+    return planning_timelimit;
   }
 
   double RRTConnectParameters::GetSmoothingTimeLimit()

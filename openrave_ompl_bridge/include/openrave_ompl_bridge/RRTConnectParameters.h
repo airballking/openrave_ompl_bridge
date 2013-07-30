@@ -18,11 +18,11 @@ namespace openrave_ompl_bridge
       // accessors to parameters of interest to others 
       std::vector<double> GetStartConfiguration();
       std::vector<double> GetGoalConfiguration();
-      double GetTimeLimit();
+      double GetPlanningTimeLimit();
       double GetSmoothingTimeLimit();
 
       // actual parameters...
-      double timelimit;
+      double planning_timelimit;
       double smoothing_timelimit;
     protected:
       // helper function which generates an xml-representation of this object and flushes it into an output-stream

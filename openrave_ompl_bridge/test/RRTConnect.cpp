@@ -40,7 +40,7 @@ class PlannerTest : public ::testing::Test
       herb->SetActiveDOFs(right_arm->GetArmIndices());
       parameters->SetRobotActiveJoints(herb);
 
-      parameters->timelimit = 3.0;
+      parameters->planning_timelimit = 3.0;
       parameters->smoothing_timelimit = 1.0;
 
       parameters->vinitialconfig.clear();

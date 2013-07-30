@@ -62,27 +62,27 @@ TEST_F(ParameterTest, GetStartConfiguration)
 
 TEST_F(ParameterTest, GetTimeLimits)
 {
-  parameters->timelimit=no_timeout;
+  parameters->planning_timelimit=no_timeout;
   parameters->smoothing_timelimit=some_timeout;
-  EXPECT_EQ(no_timeout, parameters->GetTimeLimit());
+  EXPECT_EQ(no_timeout, parameters->GetPlanningTimeLimit());
   EXPECT_EQ(some_timeout, parameters->GetSmoothingTimeLimit());
 
-  parameters->timelimit=some_timeout;
+  parameters->planning_timelimit=some_timeout;
   parameters->smoothing_timelimit=some_timeout2;
-  EXPECT_EQ(some_timeout, parameters->GetTimeLimit());
+  EXPECT_EQ(some_timeout, parameters->GetPlanningTimeLimit());
   EXPECT_EQ(some_timeout2, parameters->GetSmoothingTimeLimit());
 }
 
 TEST_F(ParameterTest, CopyTypeCast)
 {
-  parameters->timelimit = some_timeout;
+  parameters->planning_timelimit = some_timeout;
   parameters->smoothing_timelimit = some_timeout2;
 
   RRTConnectParametersPtr pointer2(new RRTConnectParameters());
   OpenRAVE::PlannerBase::PlannerParametersPtr base_pointer = boost::static_pointer_cast<OpenRAVE::PlannerBase::PlannerParameters>(parameters);
 
   pointer2->copy(base_pointer);
-  EXPECT_EQ(some_timeout, pointer2->GetTimeLimit());
+  EXPECT_EQ(some_timeout, pointer2->GetPlanningTimeLimit());
   EXPECT_EQ(some_timeout2, pointer2->GetSmoothingTimeLimit());
 }
 
