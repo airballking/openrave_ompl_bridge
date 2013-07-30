@@ -25,10 +25,10 @@ namespace openrave_ompl_bridge
 
     protected:
       // helper function which generates an xml-representation of this object and flushes it into an output-stream
-      virtual bool serialize(std::ostream& O) const;
+      virtual bool serialize(std::ostream& O, int options=0) const;
 
       // aux-function for xml-parsing, called at start of each xml-field, returns PE_SUPPORT if the field will be read by class
-      ProcessElement startElement(const std::string& name, const std::list<std::pair<std::string, std::string> >& atts);
+      ProcessElement startElement(const std::string& name, const OpenRAVE::AttributesList& atts); 
 
       // another aux-function for xml-parsing, called at end of each xml-field, returns true if parsing of field was successful
       virtual bool endElement(const std::string& name);

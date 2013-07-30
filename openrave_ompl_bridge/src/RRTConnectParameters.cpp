@@ -7,54 +7,59 @@ namespace openrave_ompl_bridge
     _vXMLParameters.push_back("timelimit");
   }
 
-  bool RRTConnectParameters::serialize(std::ostream& O) const
+  bool RRTConnectParameters::serialize(std::ostream& O, int options) const
   {
-    if (!PlannerParameters::serialize(O))
-    {    
+    if( !OpenRAVE::PlannerBase::PlannerParameters::serialize(O, options&~1) )
+    {
       return false;
     }
 
     O << "<timelimit>" << timelimit << "</timelimit>" << std::endl;
 
+    if( !(options & 1) ) 
+    {
+      O << _sExtraParameters << std::endl;
+    }
+ 
     return !!O;
   }
-
-  OpenRAVE::BaseXMLReader::ProcessElement RRTConnectParameters::startElement(const std::string& name, const std::list<std::pair<std::string, std::string> >& atts)
+ 
+  OpenRAVE::BaseXMLReader::ProcessElement RRTConnectParameters::startElement(const std::string& name, const OpenRAVE::AttributesList& atts)
   {
-   if (is_processing)
-     return PE_Ignore;
-
-   switch (OpenRAVE::PlannerBase::PlannerParameters::startElement(name, atts))
+    if( is_processing ) 
     {
-      case PE_Pass:
-        break;
-      case PE_Support:
-        return PE_Support;
-      case PE_Ignore:
-        return PE_Ignore;
+    return PE_Ignore;
     }
 
-    is_processing =
-        name == "timelimit";
+    switch( OpenRAVE::PlannerBase::PlannerParameters::startElement(name,atts) ) 
+    {
+      case PE_Pass: break;
+      case PE_Support: return PE_Support;
+      case PE_Ignore: return PE_Ignore;
+    }
+ 
+    is_processing = name=="timelimit";
 
     return is_processing ? PE_Support : PE_Pass;
   }
-
+ 
   bool RRTConnectParameters::endElement(const std::string& name)
   {
-    if (is_processing)
+    if( is_processing ) 
     {
-      if (name == "timelimit")
+      if( name == "timelimit") 
       {
-         _ss >> timelimit;
+        _ss >> timelimit;
       }
       else
       {
-        RAVELOG_WARN(str(boost::format("unknown tag %s\n") % name));
+        RAVELOG_WARN(str(boost::format("unknown tag %s\n")%name));
       }
-      is_processing = false;
-      return false;
+    is_processing = false;
+    return false;
     }
+ 
+    // give a chance for the default parameters to get processed
     return PlannerParameters::endElement(name);
   }
 
