@@ -5,6 +5,8 @@ namespace openrave_ompl_bridge
   RRTConnectParameters::RRTConnectParameters() : is_processing(false) 
   {
     _vXMLParameters.push_back("timelimit");
+    _vXMLParameters.push_back("smoothing_timelimit");
+
   }
 
   bool RRTConnectParameters::serialize(std::ostream& O, int options) const
@@ -15,6 +17,7 @@ namespace openrave_ompl_bridge
     }
 
     O << "<timelimit>" << timelimit << "</timelimit>" << std::endl;
+    O << "<smoothing_timelimit>" << smoothing_timelimit << "</smoothing_timelimit>" << std::endl;
 
     if( !(options & 1) ) 
     {
@@ -38,7 +41,7 @@ namespace openrave_ompl_bridge
       case PE_Ignore: return PE_Ignore;
     }
  
-    is_processing = name=="timelimit";
+    is_processing = name=="timelimit" || name=="smoothing_timelimit";
 
     return is_processing ? PE_Support : PE_Pass;
   }
@@ -51,7 +54,12 @@ namespace openrave_ompl_bridge
       {
         _ss >> timelimit;
       }
+      else if( name == "smoothing_timelimit") 
+      {
+        _ss >> smoothing_timelimit;
+      }
       else
+ 
       {
         RAVELOG_WARN(str(boost::format("unknown tag %s\n")%name));
       }
@@ -76,5 +84,10 @@ namespace openrave_ompl_bridge
   double RRTConnectParameters::GetTimeLimit()
   {
     return timelimit;
+  }
+
+  double RRTConnectParameters::GetSmoothingTimeLimit()
+  {
+    return smoothing_timelimit;
   }
 } /* namespace openrave_ompl_bridge */

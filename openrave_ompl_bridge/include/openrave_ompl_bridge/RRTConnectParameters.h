@@ -19,10 +19,11 @@ namespace openrave_ompl_bridge
       std::vector<double> GetStartConfiguration();
       std::vector<double> GetGoalConfiguration();
       double GetTimeLimit();
+      double GetSmoothingTimeLimit();
 
       // actual parameters...
       double timelimit;
-
+      double smoothing_timelimit;
     protected:
       // helper function which generates an xml-representation of this object and flushes it into an output-stream
       virtual bool serialize(std::ostream& O, int options=0) const;
