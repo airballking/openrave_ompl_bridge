@@ -41,13 +41,12 @@ namespace openrave_ompl_bridge
     assert(parameters_);
     assert(simple_setup_);
 
-    // TODO(GEORG): fix this after fixing parameter serialization/deserialization
-   // if(!simple_setup_->solve(parameters_->GetTimeLimit()))
-    if(!simple_setup_->solve())
+    if(!simple_setup_->solve(parameters_->GetTimeLimit()))
       return OpenRAVE::PS_Failed;
 
     if(simple_setup_->haveSolutionPath())
     {
+      //TODO(Georg): add separate timeout parameter for this
       simple_setup_->simplifySolution(parameters_->GetTimeLimit());
       CopyFinalPath(ptraj);
     }
