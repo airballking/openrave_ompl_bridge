@@ -93,3 +93,9 @@ TEST_F(CBiRRTSpaceTest, Boundaries)
   }
 
 }
+
+TEST_F(CBiRRTSpaceTest, SanityChecks)
+{
+  ASSERT_TRUE(my_space);
+  my_space->sanityChecks();
+}
