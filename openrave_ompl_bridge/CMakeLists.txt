@@ -9,6 +9,10 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 # BUILDING THE WRAPPED RRTCONNECT INTO A LIBRARY
 rosbuild_add_library(${PROJECT_NAME} src/Robot.cpp src/RRTConnect.cpp src/RRTConnectParameters.cpp) 
 target_link_libraries(${PROJECT_NAME} ompl)
+ 
+# BUILDING OUR CBiRRT PLANNER INTO A LIBRARY
+rosbuild_add_library(CBIRRT src/CBiRRTSpace.cpp)
+target_link_libraries(CBIRRT ompl)
 
 # EXPOSING THE PLUGINS TO OPENRAVE IN A SEPARATE LIBRARY
 rosbuild_add_library(OPENRAVE_PLUGINS src/PlannersMain.cpp)
@@ -16,5 +20,5 @@ target_link_libraries(OPENRAVE_PLUGINS ${PROJECT_NAME})
 
 # UNIT TESTING
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
-rosbuild_add_gtest(test/unit_tests test/UnitTests.cpp test/Robot.cpp test/RRTConnect.cpp test/RRTConnectParameters.cpp)
-target_link_libraries(test/unit_tests ${PROJECT_NAME})
+rosbuild_add_gtest(test/unit_tests test/UnitTests.cpp test/Robot.cpp test/RRTConnect.cpp test/RRTConnectParameters.cpp test/CBiRRTSpace.cpp)
+target_link_libraries(test/unit_tests ${PROJECT_NAME} CBIRRT)
