@@ -79,8 +79,8 @@ namespace openrave_ompl_bridge
         return as<ompl::base::RealVectorStateSpace>(1)->getDimension();
       }
 
+      virtual void interpolate(const ompl::base::State *from, const ompl::base::State *to, const double t, ompl::base::State *state) const; 
       virtual bool equalStates(const ompl::base::State *state1, const ompl::base::State *state2) const;
-
       virtual ompl::base::State* allocState(void) const;
       virtual void freeState(ompl::base::State *state) const;
   };
