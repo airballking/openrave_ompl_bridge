@@ -23,7 +23,16 @@ namespace openrave_ompl_bridge
 
   void CBiRRTSpace::setTaskFunction(const TaskFunctionFn &task_function)
   {
+    assert(task_function);
+
     task_function_ = task_function;
+  }
+
+  void CBiRRTSpace::setConstraintProjectionFunction (const ConstraintProjectionFn &projection_function)
+  {
+    assert(projection_function);
+
+    projection_function_ = projection_function;
   }
 
   void CBiRRTSpace::updateConstraintValues(ompl::base::State *state) const
@@ -31,6 +40,13 @@ namespace openrave_ompl_bridge
     assert(task_function_);
     
     task_function_(state);
+  }
+
+  void CBiRRTSpace::constraintProjectConfiguration(ompl::base::State *state) const
+  {
+    assert(projection_function_);
+
+    projection_function_(state);
   }
 
   ompl::base::State* CBiRRTSpace::allocState(void) const
