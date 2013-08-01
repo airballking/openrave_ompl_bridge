@@ -2,6 +2,7 @@
 #include <vector>
 #include <openrave_ompl_bridge/CBiRRTSpace.h>
 #include <ompl/base/ScopedState.h>
+#include <ompl/base/StateSpace.h>
 
 using namespace openrave_ompl_bridge;
 
@@ -25,10 +26,22 @@ class CBiRRTSpaceTest : public ::testing::Test
         some_constraints.push_back((upper_constraint_limits[i] - lower_constraint_limits[i])/2.0);
       }
       my_space = CBiRRTSpacePtr(new CBiRRTSpace(number_joints, number_constraints));
+      my_space->setTaskFunction(boost::bind(&CBiRRTSpaceTest::MyTaskFunction, this, _1));
     }
 
     virtual void TearDown()
     {
+    }
+
+    void MyTaskFunction(ompl::base::State *state)
+    {
+      assert(state);
+
+      CBiRRTSpace::StateType* cbirrt_state = state->as<CBiRRTSpace::StateType>();
+      assert(cbirrt_state);
+
+      for(unsigned int i=0; i<my_space->getNumberOfConstraints(); i++)
+        cbirrt_state->setConstraintValue(1.0, i);
     }
 
     unsigned int number_joints, number_constraints;
@@ -98,4 +111,16 @@ TEST_F(CBiRRTSpaceTest, SanityChecks)
 {
   ASSERT_TRUE(my_space);
   my_space->sanityChecks();
+}
+
+TEST_F(CBiRRTSpaceTest, UpdateConstraintValues)
+{
+  ASSERT_TRUE(my_space);
+  ompl::base::State* some_state = my_space->allocState();
+  my_space->updateConstraintValues(some_state);
+
+  CBiRRTSpace::StateType* cbirrt_state = some_state->as<CBiRRTSpace::StateType>();
+  for(unsigned int i=0; i<my_space->getNumberOfConstraints(); i++)
+    EXPECT_DOUBLE_EQ(1.0, cbirrt_state->getConstraintValue(i));
+  my_space->freeState(some_state);
 }

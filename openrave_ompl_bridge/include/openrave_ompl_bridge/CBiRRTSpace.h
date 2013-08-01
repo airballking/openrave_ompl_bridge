@@ -6,6 +6,9 @@
 
 namespace openrave_ompl_bridge
 {
+  // convenience typedef for task functions
+  typedef boost::function< void (ompl::base::State *)> TaskFunctionFn;
+
   class CBiRRTSpace : public ompl::base::CompoundStateSpace
   {
     public:
@@ -83,6 +86,13 @@ namespace openrave_ompl_bridge
       virtual bool equalStates(const ompl::base::State *state1, const ompl::base::State *state2) const;
       virtual ompl::base::State* allocState(void) const;
       virtual void freeState(ompl::base::State *state) const;
+
+      void setTaskFunction (const TaskFunctionFn &task_function);
+
+      void updateConstraintValues(ompl::base::State *state) const;
+
+    private:
+      TaskFunctionFn task_function_;
   };
 
   // convenience typedef for shared pointers to objects of this class
