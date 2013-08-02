@@ -8,6 +8,12 @@ using namespace openrave_ompl_bridge;
 
 class CBiRRTSpaceTest : public ::testing::Test
 {
+  public:
+    bool MyDummyIsValid(const ompl::base::State *state)
+    {
+      return true;
+    }
+
   protected:
     virtual void SetUp()
     {
@@ -105,6 +111,7 @@ TEST_F(CBiRRTSpaceTest, Boundaries)
     EXPECT_EQ(my_space->getConstraintBounds().high[i], upper_constraint_limits[i]);
   }
 
+  EXPECT_GT(my_space->getMaximumExtent(), 0.0);
 }
 
 TEST_F(CBiRRTSpaceTest, SanityChecks)
@@ -124,4 +131,27 @@ TEST_F(CBiRRTSpaceTest, UpdateAndProjectConstraintValues)
     EXPECT_DOUBLE_EQ(2.3, cbirrt_state->getConstraintValue(i));
 
   my_space->freeState(some_state);
+}
+
+TEST_F(CBiRRTSpaceTest, SpaceInformation)
+{
+  ASSERT_TRUE(my_space);
+
+  ASSERT_EQ(lower_constraint_limits.size(), my_space->getNumberOfConstraints());
+  ASSERT_EQ(upper_constraint_limits.size(), my_space->getNumberOfConstraints());
+  ASSERT_EQ(lower_joint_limits.size(), my_space->getNumberOfJoints());
+  ASSERT_EQ(upper_joint_limits.size(), my_space->getNumberOfJoints());
+  ompl::base::RealVectorBounds joint_bounds(my_space->getNumberOfJoints());
+  ompl::base::RealVectorBounds constraint_bounds(my_space->getNumberOfConstraints());
+  joint_bounds.low = lower_joint_limits;
+  joint_bounds.high = upper_joint_limits;
+  constraint_bounds.low = lower_constraint_limits;
+  constraint_bounds.high = upper_constraint_limits; 
+  my_space->setBounds(joint_bounds, constraint_bounds);
+  ASSERT_GT(my_space->getMaximumExtent(), 0.0);
+
+  ompl::base::SpaceInformation si(my_space);
+  si.setStateValidityChecker(boost::bind(&CBiRRTSpaceTest::MyDummyIsValid, this, _1));
+  si.setup();
+  EXPECT_TRUE(si.isSetup());
 }
