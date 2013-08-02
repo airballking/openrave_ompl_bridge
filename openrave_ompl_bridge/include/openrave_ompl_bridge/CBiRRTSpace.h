@@ -6,8 +6,6 @@
 
 namespace openrave_ompl_bridge
 {
-  // convenience typedef for task functions
-  typedef boost::function< void (ompl::base::State *)> TaskFunctionFn;
   // convenience typedef for task-function-based projection of configurations
   typedef boost::function< void (ompl::base::State *)> ConstraintProjectionFn;
 
@@ -96,16 +94,13 @@ namespace openrave_ompl_bridge
       virtual ompl::base::State* allocState(void) const;
       virtual void freeState(ompl::base::State *state) const;
 
-      // constraint-related function-hooks
-      void setTaskFunction (const TaskFunctionFn &task_function);
+      // constraint-related function-hook
       void setConstraintProjectionFunction (const ConstraintProjectionFn &projection_function);
 
-      // usage of constraint-related function hooks
-      void updateConstraintValues(ompl::base::State *state) const;
+      // usage of constraint-related function hook
       void constraintProjectConfiguration(ompl::base::State *state) const;
 
     private:
-      TaskFunctionFn task_function_;
       ConstraintProjectionFn projection_function_;
   };
 

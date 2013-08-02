@@ -10,8 +10,8 @@ namespace openrave_ompl_bridge
     // using regular joint-space interpolation for joint-space part of state
     components_[0]->interpolate(cfrom->components[0], cto->components[0], t, cstate->components[0]);
 
-    // updating the constraint values after joint-space interpolation
-    updateConstraintValues(state);
+    // project interpolated joint-space configuration onto path constraints
+    constraintProjectConfiguration(state);
   }
 
   bool CBiRRTSpace::equalStates(const ompl::base::State *state1, const ompl::base::State *state2) const
@@ -21,25 +21,11 @@ namespace openrave_ompl_bridge
     return components_[0]->equalStates(cstate1->components[0], cstate2->components[0]);
   }
 
-  void CBiRRTSpace::setTaskFunction(const TaskFunctionFn &task_function)
-  {
-    assert(task_function);
-
-    task_function_ = task_function;
-  }
-
   void CBiRRTSpace::setConstraintProjectionFunction (const ConstraintProjectionFn &projection_function)
   {
     assert(projection_function);
 
     projection_function_ = projection_function;
-  }
-
-  void CBiRRTSpace::updateConstraintValues(ompl::base::State *state) const
-  {
-    assert(task_function_);
-    
-    task_function_(state);
   }
 
   void CBiRRTSpace::constraintProjectConfiguration(ompl::base::State *state) const

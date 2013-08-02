@@ -26,23 +26,11 @@ class CBiRRTSpaceTest : public ::testing::Test
         some_constraints.push_back((upper_constraint_limits[i] - lower_constraint_limits[i])/2.0);
       }
       my_space = CBiRRTSpacePtr(new CBiRRTSpace(number_joints, number_constraints));
-      my_space->setTaskFunction(boost::bind(&CBiRRTSpaceTest::MyTaskFunction, this, _1));
       my_space->setConstraintProjectionFunction(boost::bind(&CBiRRTSpaceTest::MyProjectionFunction, this, _1));
     }
 
     virtual void TearDown()
     {
-    }
-
-    void MyTaskFunction(ompl::base::State *state)
-    {
-      assert(state);
-
-      CBiRRTSpace::StateType* cbirrt_state = state->as<CBiRRTSpace::StateType>();
-      assert(cbirrt_state);
-
-      for(unsigned int i=0; i<my_space->getNumberOfConstraints(); i++)
-        cbirrt_state->setConstraintValue(1.0, i);
     }
 
     void MyProjectionFunction(ompl::base::State *state)
@@ -129,11 +117,7 @@ TEST_F(CBiRRTSpaceTest, UpdateAndProjectConstraintValues)
 {
   ASSERT_TRUE(my_space);
   ompl::base::State* some_state = my_space->allocState();
-  my_space->updateConstraintValues(some_state);
-
   CBiRRTSpace::StateType* cbirrt_state = some_state->as<CBiRRTSpace::StateType>();
-  for(unsigned int i=0; i<my_space->getNumberOfConstraints(); i++)
-    EXPECT_DOUBLE_EQ(1.0, cbirrt_state->getConstraintValue(i));
 
   my_space->constraintProjectConfiguration(some_state);
   for(unsigned int i=0; i<my_space->getNumberOfConstraints(); i++)
