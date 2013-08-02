@@ -28,11 +28,26 @@ namespace openrave_ompl_bridge
     projection_function_ = projection_function;
   }
 
+  void CBiRRTSpace::setPathConstraintsCheckFunction (const PathConstraintsCheckFn &path_constraints_check_function)
+  {
+    assert(path_constraints_check_function);
+
+    path_constraints_check_function_ = path_constraints_check_function;
+  }
+
   void CBiRRTSpace::constraintProjectConfiguration(ompl::base::State *state) const
   {
     assert(projection_function_);
 
     projection_function_(state);
+  }
+
+  bool CBiRRTSpace::fulfillsPathConstraints(const ompl::base::State *state) const
+  {
+    assert(state);
+    assert(path_constraints_check_function_);
+
+    return path_constraints_check_function_(state);
   }
 
   ompl::base::State* CBiRRTSpace::allocState(void) const

@@ -8,6 +8,8 @@ namespace openrave_ompl_bridge
 {
   // convenience typedef for task-function-based projection of configurations
   typedef boost::function< void (ompl::base::State *)> ConstraintProjectionFn;
+  // convenience typedef for checking whether a state fulfills the path constraints
+  typedef boost::function< bool (const ompl::base::State *)> PathConstraintsCheckFn;
 
   class CBiRRTSpace : public ompl::base::CompoundStateSpace
   {
@@ -96,12 +98,14 @@ namespace openrave_ompl_bridge
 
       // constraint-related function-hook
       void setConstraintProjectionFunction (const ConstraintProjectionFn &projection_function);
-
+      void setPathConstraintsCheckFunction (const PathConstraintsCheckFn &path_constraints_check_function); 
       // usage of constraint-related function hook
       void constraintProjectConfiguration(ompl::base::State *state) const;
+      bool fulfillsPathConstraints(const ompl::base::State *state) const;
 
     private:
       ConstraintProjectionFn projection_function_;
+      PathConstraintsCheckFn path_constraints_check_function_;
   };
 
   // convenience typedef for shared pointers to objects of this class
@@ -110,4 +114,3 @@ namespace openrave_ompl_bridge
 } // namespace openrave_ompl_bridge
 
 #endif // _OPENRAVE_OMPL_BRIDGE_CBIRRT_SPACE_
-
