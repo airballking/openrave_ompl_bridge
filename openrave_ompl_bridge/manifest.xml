@@ -10,6 +10,7 @@
   <depend package="roscpp"/>
   <depend package="openrave"/>
   <depend package="pr_ordata"/> <!-- only a test dependency -->
+  <depend package="orocos_kdl"/>
 
   <rosdep name="ompl"/>
   <rosdep name="gtest"/>
