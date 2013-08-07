@@ -1,7 +1,8 @@
 #include <gtest/gtest.h>
-
+#include <math.h>
 #include <openrave-core.h>
 #include <openrave_ompl_bridge/Robot.h>
+#include <openrave_ompl_bridge/Conversions.h>
 
 using namespace openrave_ompl_bridge;
 
@@ -119,4 +120,38 @@ TEST_F(RobotTest, SelfCollision)
   herb->SetActiveDOFs(right_arm->GetArmIndices());
   test_robot->setJointValues(collision_config);
   ASSERT_TRUE(test_robot->isInSelfCollision());
+}
+
+TEST_F(RobotTest, Jacobian)
+{
+  ASSERT_TRUE(right_arm);
+  std::vector<double> non_singular_conf;
+  non_singular_conf.push_back(0.9);
+  non_singular_conf.push_back(0.0);
+  non_singular_conf.push_back(0.0);
+  non_singular_conf.push_back(0.0);
+  non_singular_conf.push_back(0.0);
+  non_singular_conf.push_back(0.0);
+  non_singular_conf.push_back(0.0);
+  herb->SetActiveDOFs(right_arm->GetArmIndices());
+  test_robot->setJointValues(non_singular_conf);
+
+  KDL::Jacobian jac;
+  jac.resize(test_robot->getDOF());
+ 
+  std::vector<double> jacobian, angular_vel_jacobian;
+  right_arm->CalculateJacobian(jacobian);
+  right_arm->CalculateAngularVelocityJacobian(angular_vel_jacobian);
+  toKDL(jac, jacobian, angular_vel_jacobian);
+
+  KDL::Jacobian jac2 = test_robot->getJacobian(test_robot->getJointValues(), right_arm->GetName());
+
+  double epsilon = std::pow(10, -14);
+  for(unsigned int i=0; i<jac.rows(); i++)
+  {
+    for(unsigned int j=0; j<jac.columns(); j++)
+    {
+      EXPECT_NEAR(jac(i,j), jac2(i,j), epsilon);
+    }
+  }  
 }
