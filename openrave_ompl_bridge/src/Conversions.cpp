@@ -24,7 +24,7 @@ namespace openrave_ompl_bridge
    frame.p.y(transform.trans.y);
    frame.p.z(transform.trans.z);
  
-   frame.M = KDL::Rotation::Quaternion(transform.rot.x, transform.rot.y, transform.rot.z, transform.rot.w);
+   frame.M = KDL::Rotation::Quaternion(transform.rot.w, transform.rot.y, transform.rot.z, transform.rot.x);
  }
  
  KDL::Frame toKDL(const OpenRAVE::Transform& transform)
@@ -42,10 +42,10 @@ namespace openrave_ompl_bridge
  
    double x,y,z,w;
    frame.M.GetQuaternion(x, y, z, w);
-   transform.rot.x = x;
+   transform.rot.x = w;
    transform.rot.y = y;
    transform.rot.z = z;
-   transform.rot.w = w;
+   transform.rot.w = x;
  }
  
  OpenRAVE::Transform toOR(const KDL::Frame& frame)

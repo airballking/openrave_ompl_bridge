@@ -74,3 +74,15 @@ TEST_F(ConversionsTest, Jacobian)
     }
   }  
 }
+
+TEST_F(ConversionsTest, Rotation)
+{
+  EXPECT_TRUE(Equal(KDL::Rotation::RotX(M_PI/3.0), toKDL(toOR(KDL::Frame(KDL::Rotation::RotX(M_PI/3.0), KDL::Vector(0.0, 0.0, 0.0)))).M));
+  EXPECT_TRUE(Equal(KDL::Rotation::RotY(M_PI/3.0), toKDL(toOR(KDL::Frame(KDL::Rotation::RotY(M_PI/3.0), KDL::Vector(0.0, 0.0, 0.0)))).M));
+  EXPECT_TRUE(Equal(KDL::Rotation::RotZ(M_PI/3.0), toKDL(toOR(KDL::Frame(KDL::Rotation::RotZ(M_PI/3.0), KDL::Vector(0.0, 0.0, 0.0)))).M));
+  EXPECT_TRUE(Equal(KDL::Rotation::RotX(-M_PI/3.0), toKDL(toOR(KDL::Frame(KDL::Rotation::RotX(-M_PI/3.0), KDL::Vector(0.0, 0.0, 0.0)))).M));
+  EXPECT_TRUE(Equal(KDL::Rotation::RotY(-M_PI/3.0), toKDL(toOR(KDL::Frame(KDL::Rotation::RotY(-M_PI/3.0), KDL::Vector(0.0, 0.0, 0.0)))).M));
+  EXPECT_TRUE(Equal(KDL::Rotation::RotZ(-M_PI/3.0), toKDL(toOR(KDL::Frame(KDL::Rotation::RotZ(-M_PI/3.0), KDL::Vector(0.0, 0.0, 0.0)))).M));
+  EXPECT_TRUE(Equal(KDL::Rotation::Identity(), KDL::Rotation::Identity()));
+  EXPECT_TRUE(Equal(KDL::Rotation::Identity(), toKDL(OpenRAVE::Transform()).M));
+}
