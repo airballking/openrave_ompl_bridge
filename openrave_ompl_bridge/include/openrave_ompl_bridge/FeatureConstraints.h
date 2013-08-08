@@ -14,8 +14,8 @@ namespace openrave_ompl_bridge
   {
     public:
       // the functionality we're offering
-      bool areConstraintsFulfilled();
-      double distanceFromConstraints();
+      bool areConstraintsFulfilled() const;
+      double distanceFromConstraints() const;
       const std::vector<double>& evaluateConstraints(const std::vector<double>& joint_values); 
       const std::vector<double>& constrainConfiguration(const std::vector<double>& start_joint_values);
       
@@ -27,7 +27,7 @@ namespace openrave_ompl_bridge
       RobotPtr robot_;
       EnvironmentPtr environment_;
 
-    private: 
+      // some other variables ;)
       std::vector<double> joint_values_;
       std::vector<double> task_values_;
   }; 
