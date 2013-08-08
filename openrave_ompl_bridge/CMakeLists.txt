@@ -7,7 +7,7 @@ set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 
 # BUILDING THE WRAPPED RRTCONNECT INTO A LIBRARY
-rosbuild_add_library(${PROJECT_NAME} src/Robot.cpp src/RRTConnect.cpp src/RRTConnectParameters.cpp src/Conversions.cpp) 
+rosbuild_add_library(${PROJECT_NAME} src/Robot.cpp src/RRTConnect.cpp src/RRTConnectParameters.cpp src/Conversions.cpp src/Environment.cpp) 
 target_link_libraries(${PROJECT_NAME} ompl)
  
 # BUILDING OUR CBiRRT PLANNER INTO A LIBRARY
