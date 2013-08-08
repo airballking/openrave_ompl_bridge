@@ -11,7 +11,7 @@ rosbuild_add_library(${PROJECT_NAME} src/Robot.cpp src/RRTConnect.cpp src/RRTCon
 target_link_libraries(${PROJECT_NAME} ompl)
  
 # BUILDING OUR CBiRRT PLANNER INTO A LIBRARY
-rosbuild_add_library(CBIRRT src/CBiRRTSpace.cpp src/CBiRRTMotionValidator.cpp)
+rosbuild_add_library(CBIRRT src/CBiRRTSpace.cpp src/CBiRRTMotionValidator.cpp src/FeatureConstraints.cpp)
 target_link_libraries(CBIRRT ompl)
 
 # EXPOSING THE PLUGINS TO OPENRAVE IN A SEPARATE LIBRARY
