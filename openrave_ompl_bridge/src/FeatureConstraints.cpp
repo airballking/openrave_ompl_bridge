@@ -106,4 +106,24 @@ namespace openrave_ompl_bridge
     return pose_tool_in_EE_;
   }
 
+  void FeatureConstraintsTask::setRobot(const RobotPtr robot)
+  {
+    robot_ = robot;
+  }
+
+  const RobotPtr FeatureConstraintsTask::getRobot()
+  {
+    return robot_;
+  }
+
+  void FeatureConstraintsTask::setEnvironment(const EnvironmentPtr environment)
+  {
+    environment_ = environment;
+  }
+
+  const EnvironmentPtr FeatureConstraintsTask::getEnvironment()
+  {
+    return environment_;
+  }
+
 } // namespace openrave_ompl_bridge

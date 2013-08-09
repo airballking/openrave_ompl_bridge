@@ -35,12 +35,15 @@ namespace openrave_ompl_bridge
       void setToolPose(const KDL::Frame& pose_tool_in_EE);
       const KDL::Frame& getToolPose();
 
+      void setRobot(const RobotPtr robot);
+      const RobotPtr getRobot();
+
+      void setEnvironment(const EnvironmentPtr environment);
+      const EnvironmentPtr getEnvironment();
+
       // input parameters for the various functions
       std::vector<Constraint> constraint_configurations_;
       Ranges commands_;
-      RobotPtr robot_;
-      EnvironmentPtr environment_;
-
     private:
       // members holding task and joint-values
       // KDL representation is always the current internal representation
@@ -53,6 +56,10 @@ namespace openrave_ompl_bridge
       KDL::Frame pose_object_in_tool_; 
       // need to know where the tool is w.r.t. to the end-effector
       KDL::Frame pose_tool_in_EE_;
+
+      // proxy-objects to access openrave-stuff
+      RobotPtr robot_;
+      EnvironmentPtr environment_;
 
   }; 
 
