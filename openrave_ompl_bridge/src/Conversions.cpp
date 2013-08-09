@@ -54,4 +54,36 @@ namespace openrave_ompl_bridge
    toOR(result, frame);
    return result;
  }
+
+  void toKDL(KDL::JntArray& array, const std::vector<double>& vector)
+  {
+    assert(array.rows() == vector.size());
+
+    for(unsigned int i=0; i<array.rows(); i++)
+      array(i) = vector[i];
+  }
+
+  KDL::JntArray toKDL(const std::vector<double>& vector)
+  {
+    KDL::JntArray result;
+    result.resize(vector.size());
+    toKDL(result, vector);
+    return result;
+  }
+
+  void toVector(std::vector<double>& vector, const KDL::JntArray& array)
+  {
+    assert(vector.size() == array.rows());
+
+    for(unsigned int i=0; i<vector.size(); i++)
+      vector[i] = array(i);
+  }
+
+  std::vector<double> toVector(const KDL::JntArray& array)
+  {
+    std::vector<double> result;
+    result.resize(array.rows());
+    toVector(result, array);
+    return result;
+  }
 } // namespace openrave_ompl_bridge

@@ -2,6 +2,7 @@
 #define OPENRAVE_OMPL_BRIDGE_CONVERSIONS_H
 
 #include <kdl/jacobian.hpp>
+#include <kdl/jntarray.hpp>
 #include <kdl/frames.hpp>
 
 #include <vector>
@@ -15,5 +16,10 @@ namespace openrave_ompl_bridge
   KDL::Frame toKDL(const OpenRAVE::Transform& transform);
   void toOR(OpenRAVE::Transform& transform, const KDL::Frame& frame);
   OpenRAVE::Transform toOR(const KDL::Frame& frame);
+
+  void toKDL(KDL::JntArray& array, const std::vector<double>& vector);
+  KDL::JntArray toKDL(const std::vector<double>& vector);
+  void toVector(std::vector<double>& vector, const KDL::JntArray& array);
+  std::vector<double> toVector(const KDL::JntArray& array); 
 } // namespace openrave_ompl_bridge
 #endif // OPENRAVE_OMPL_BRIDGE_CONVERSIONS_H

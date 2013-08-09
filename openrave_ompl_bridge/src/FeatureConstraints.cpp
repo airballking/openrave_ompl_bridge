@@ -1,5 +1,5 @@
 #include <openrave_ompl_bridge/FeatureConstraints.h>
-#include <feature_constraints/Conversions.h>
+#include <openrave_ompl_bridge/Conversions.h>
 
 namespace openrave_ompl_bridge
 {
@@ -20,7 +20,7 @@ namespace openrave_ompl_bridge
   const std::vector<double>& FeatureConstraintsTask::calculateConstraintValues()
   {
     evaluateConstraints(kdl_task_values_, pose_object_in_tool_, constraint_configurations_);
-    toMsg(kdl_task_values_, task_values_);
+    toVector(task_values_, kdl_task_values_);
     return task_values_;
   }
 
@@ -68,29 +68,21 @@ namespace openrave_ompl_bridge
  
   void FeatureConstraintsTask::setJointValues(const std::vector<double>& joint_values)
   {
-    assert(kdl_joint_values_.rows() == joint_values.size());
-    
-    fromMsg(joint_values, kdl_joint_values_);
+    toKDL(kdl_joint_values_, joint_values);
   }
 
   const std::vector<double>& FeatureConstraintsTask::getJointValues() const
   {
-    assert(kdl_joint_values_.rows() == joint_values_.size());
-   
     return joint_values_;
   }
 
   void FeatureConstraintsTask::setTaskValues(const std::vector<double>& task_values)
   {
-    assert(kdl_task_values_.rows() == task_values.size());
-    
-    fromMsg(task_values, kdl_task_values_);
+    toKDL(kdl_task_values_, task_values);
   }
 
   const std::vector<double>& FeatureConstraintsTask::getTaskValues() const
   {
-    assert(kdl_task_values_.rows() == task_values_.size());
-   
     return task_values_;
   } 
 
