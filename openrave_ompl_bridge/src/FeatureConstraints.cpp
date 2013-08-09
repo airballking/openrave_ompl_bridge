@@ -1,9 +1,24 @@
 #include <openrave_ompl_bridge/FeatureConstraints.h>
+#include <feature_constraints/Conversions.h>
 
 namespace openrave_ompl_bridge
 {
-  const std::vector<double>& FeatureConstraintsTask::evaluateConstraints(const std::vector<double>& joint_values)
+  FeatureConstraintsTask::FeatureConstraintsTask()
   {
+    Constraint::init();  
+  }
+
+  void FeatureConstraintsTask::init(unsigned int num_constraints)
+  {
+    task_values_kdl_.resize(num_constraints);
+    task_values_.resize(num_constraints);
+    joint_values_.resize(num_constraints);
+  }
+
+  const std::vector<double>& FeatureConstraintsTask::calculateConstraintValues()
+  {
+    evaluateConstraints(task_values_kdl_, pose_object_in_tool_, constraint_configurations_);
+    toMsg(task_values_kdl_, task_values_);
     return task_values_;
   }
 

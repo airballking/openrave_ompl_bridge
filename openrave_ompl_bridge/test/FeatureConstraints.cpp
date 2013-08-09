@@ -23,13 +23,45 @@ class FeatureConstraintsTest : public ::testing::Test
       false_constraints.task_values_.push_back(0.0);
       false_constraints.task_values_.push_back(-2.0);
       false_constraints.task_values_.push_back(5.5);
+
+      Feature oven, bottle;
+      oven.name = "oven";
+      oven.pos = KDL::Vector(0.0, 0.0, 0.0);
+      oven.dir = KDL::Vector(0.0, 0.0, 1.0);
+      oven.contact_dir = KDL::Vector(1.0, 0.0, 0.0);
+      bottle.name = "bottle";
+      bottle.pos = KDL::Vector(0.0, 0.0, 0.0);
+      bottle.dir = KDL::Vector(0.0, 0.0, 1.0);
+      bottle.contact_dir = KDL::Vector(1.0, 0.0, 0.0);
+ 
+      Constraint c1, c2, c3;
+      c1.name = "height of bottle over oven";
+      c1.setFunction("height");
+      c1.tool_feature = bottle;
+      c1.object_feature = oven;
+    
+      c2.name = "distance of bottle over oven";
+      c2.setFunction("distance");
+      c2.tool_feature = bottle;
+      c2.object_feature = oven;
+
+      c3.name = "bottle upright";
+      c3.setFunction("perpendicular");
+      c3.tool_feature = bottle;
+      c3.object_feature = oven;
+
+      constraints.constraint_configurations_.push_back(c1);
+      constraints.constraint_configurations_.push_back(c2);
+      constraints.constraint_configurations_.push_back(c3);
+      constraints.pose_object_in_tool_ = KDL::Frame(KDL::Rotation::RotZ(M_PI/2.0), KDL::Vector(1.0, 1.0, 0.75));
+      constraints.init(3);
     }
 
     virtual void TearDown()
     {
     } 
 
-    FeatureConstraintsTask true_constraints, false_constraints;
+    FeatureConstraintsTask true_constraints, false_constraints, constraints;
 };
 
 TEST_F(FeatureConstraintsTest, areConstraintsFulfilled)
@@ -42,4 +74,13 @@ TEST_F(FeatureConstraintsTest, distanceFromConstraints)
 {
   EXPECT_DOUBLE_EQ(true_constraints.distanceFromConstraints(), 0.0);
   EXPECT_DOUBLE_EQ(false_constraints.distanceFromConstraints(), std::sqrt(10.0));
+}
+
+TEST_F(FeatureConstraintsTest, calculateConstraintValues)
+{
+  std::vector<double> values = constraints.calculateConstraintValues();
+  ASSERT_EQ(values.size(), 3);
+  EXPECT_DOUBLE_EQ(0.75, values[0]);
+  EXPECT_DOUBLE_EQ(std::sqrt(2.0), values[1]);
+  EXPECT_DOUBLE_EQ(1.0, values[2]);
 }

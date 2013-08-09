@@ -13,10 +13,13 @@ namespace openrave_ompl_bridge
   class FeatureConstraintsTask
   {
     public:
+      FeatureConstraintsTask(); 
+
       // the functionality we're offering
+      void init(unsigned int num_constraints);
       bool areConstraintsFulfilled() const;
       double distanceFromConstraints() const;
-      const std::vector<double>& evaluateConstraints(const std::vector<double>& joint_values); 
+      const std::vector<double>& calculateConstraintValues(); 
       const std::vector<double>& constrainConfiguration(const std::vector<double>& start_joint_values);
       
       // input parameters for the various functions
@@ -30,6 +33,7 @@ namespace openrave_ompl_bridge
       // some other variables ;)
       std::vector<double> joint_values_;
       std::vector<double> task_values_;
+      KDL::JntArray task_values_kdl_;
   }; 
 
   class FeatureConstraintsPlanningTask
