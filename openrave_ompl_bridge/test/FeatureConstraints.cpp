@@ -12,20 +12,26 @@ class FeatureConstraintsTest : public ::testing::Test
       true_constraints.init(num_constraints);
       false_constraints.init(num_constraints);
       std::vector<double> task_values;
+      Ranges true_cmd, false_cmd;
+      true_cmd.resize(num_constraints);
+      false_cmd.resize(num_constraints);
       for(unsigned int i=0; i<num_constraints; i++)
       {
-        true_constraints.commands_.pos_lo(i) = -1.0;
-        true_constraints.commands_.pos_hi(i) = 2.5;
+        true_cmd.pos_lo(i) = -1.0;
+        true_cmd.pos_hi(i) = 2.5;
         task_values.push_back(0.25);
 
-        false_constraints.commands_.pos_lo(i) = -1.0;
-        false_constraints.commands_.pos_hi(i) = 2.5;
+        false_cmd.pos_lo(i) = -1.0;
+        false_cmd.pos_hi(i) = 2.5;
       }
       true_constraints.setTaskValues(task_values);
       task_values[0] = (0.0);
       task_values[1] = (-2.0);
       task_values[2] = (5.5);
       false_constraints.setTaskValues(task_values);
+
+      true_constraints.setCommands(true_cmd);
+      false_constraints.setCommands(false_cmd);
 
       Feature oven, bottle;
       oven.name = "oven";
@@ -53,11 +59,13 @@ class FeatureConstraintsTest : public ::testing::Test
       c3.tool_feature = bottle;
       c3.object_feature = oven;
 
-      constraints.constraint_configurations_.push_back(c1);
-      constraints.constraint_configurations_.push_back(c2);
-      constraints.constraint_configurations_.push_back(c3);
-      constraints.setObjectPose(KDL::Frame(KDL::Rotation::RotZ(M_PI/2.0), KDL::Vector(1.0, 1.0, 0.75)));
       constraints.init(3);
+      std::vector<Constraint> constraint_vector;
+      constraint_vector.push_back(c1);
+      constraint_vector.push_back(c2);
+      constraint_vector.push_back(c3);
+      constraints.setConstraints(constraint_vector);
+      constraints.setObjectPose(KDL::Frame(KDL::Rotation::RotZ(M_PI/2.0), KDL::Vector(1.0, 1.0, 0.75)));
     }
 
     virtual void TearDown()

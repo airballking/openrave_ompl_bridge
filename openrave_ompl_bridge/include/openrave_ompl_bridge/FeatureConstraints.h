@@ -36,15 +36,18 @@ namespace openrave_ompl_bridge
       const KDL::Frame& getToolPose();
 
       void setRobot(const RobotPtr robot);
-      const RobotPtr getRobot();
+      RobotPtr getRobot();
 
       void setEnvironment(const EnvironmentPtr environment);
-      const EnvironmentPtr getEnvironment();
+      EnvironmentPtr getEnvironment();
 
-      // input parameters for the various functions
-      std::vector<Constraint> constraint_configurations_;
-      Ranges commands_;
-    private:
+      void setConstraints(const std::vector<Constraint>& constraints);
+      const std::vector<Constraint>& getConstraints() const;
+
+      void setCommands(const Ranges& commands);
+      const Ranges& getCommands() const;
+
+   private:
       // members holding task and joint-values
       // KDL representation is always the current internal representation
       // std::vector representations are temporary variables
@@ -61,6 +64,9 @@ namespace openrave_ompl_bridge
       RobotPtr robot_;
       EnvironmentPtr environment_;
 
+      // the actual constraints
+      std::vector<Constraint> constraint_configurations_;
+      Ranges constraint_commands_;
   }; 
 
   class FeatureConstraintsPlanningTask
