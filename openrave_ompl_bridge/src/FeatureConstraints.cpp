@@ -11,6 +11,7 @@ namespace openrave_ompl_bridge
   void FeatureConstraintsTask::init(unsigned int num_constraints)
   {
     task_values_kdl_.resize(num_constraints);
+    kdl_joint_values_.resize(num_constraints);
     task_values_.resize(num_constraints);
     joint_values_.resize(num_constraints);
   }
@@ -64,4 +65,17 @@ namespace openrave_ompl_bridge
     return joint_values_;
   }
  
+  void FeatureConstraintsTask::setJointValues(const std::vector<double>& joint_values)
+  {
+    assert(kdl_joint_values_.rows() == joint_values.size());
+    
+    fromMsg(joint_values, kdl_joint_values_);
+  }
+
+  const std::vector<double>& FeatureConstraintsTask::getJointValues() 
+  {
+    assert(kdl_joint_values_.rows() == joint_values_.size());
+   
+    return joint_values_;
+  }
 } // namespace openrave_ompl_bridge

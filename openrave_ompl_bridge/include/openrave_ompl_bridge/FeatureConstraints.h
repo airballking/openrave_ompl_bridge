@@ -22,6 +22,10 @@ namespace openrave_ompl_bridge
       const std::vector<double>& calculateConstraintValues(); 
       const std::vector<double>& constrainConfiguration(const std::vector<double>& start_joint_values);
       
+      // getters and setters
+      void setJointValues(const std::vector<double>& joint_values);
+      const std::vector<double>& getJointValues();     
+
       // input parameters for the various functions
       std::vector<Constraint> constraint_configurations_;
       Ranges commands_;
@@ -31,9 +35,12 @@ namespace openrave_ompl_bridge
       EnvironmentPtr environment_;
 
       // some other variables ;)
-      std::vector<double> joint_values_;
       std::vector<double> task_values_;
       KDL::JntArray task_values_kdl_;
+
+    private:
+      std::vector<double> joint_values_;
+      KDL::JntArray kdl_joint_values_;
   }; 
 
   class FeatureConstraintsPlanningTask
