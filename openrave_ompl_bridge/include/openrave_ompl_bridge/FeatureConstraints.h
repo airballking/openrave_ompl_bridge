@@ -24,7 +24,11 @@ namespace openrave_ompl_bridge
       
       // getters and setters
       void setJointValues(const std::vector<double>& joint_values);
-      const std::vector<double>& getJointValues();     
+      const std::vector<double>& getJointValues() const;  
+
+      void setTaskValues(const std::vector<double>& task_values);
+      const std::vector<double>& getTaskValues() const; 
+
 
       // input parameters for the various functions
       std::vector<Constraint> constraint_configurations_;
@@ -34,13 +38,12 @@ namespace openrave_ompl_bridge
       RobotPtr robot_;
       EnvironmentPtr environment_;
 
-      // some other variables ;)
-      std::vector<double> task_values_;
-      KDL::JntArray task_values_kdl_;
-
     private:
-      std::vector<double> joint_values_;
-      KDL::JntArray kdl_joint_values_;
+      // members holding task and joint-values
+      // KDL representation is always the current internal representation
+      // std::vector representations are temporary variables
+      std::vector<double> joint_values_, task_values_;
+      KDL::JntArray kdl_joint_values_, kdl_task_values_;
   }; 
 
   class FeatureConstraintsPlanningTask

@@ -10,28 +10,29 @@ namespace openrave_ompl_bridge
 
   void FeatureConstraintsTask::init(unsigned int num_constraints)
   {
-    task_values_kdl_.resize(num_constraints);
+    kdl_task_values_.resize(num_constraints);
     kdl_joint_values_.resize(num_constraints);
     task_values_.resize(num_constraints);
     joint_values_.resize(num_constraints);
+    commands_.resize(num_constraints);
   }
 
   const std::vector<double>& FeatureConstraintsTask::calculateConstraintValues()
   {
-    evaluateConstraints(task_values_kdl_, pose_object_in_tool_, constraint_configurations_);
-    toMsg(task_values_kdl_, task_values_);
+    evaluateConstraints(kdl_task_values_, pose_object_in_tool_, constraint_configurations_);
+    toMsg(kdl_task_values_, task_values_);
     return task_values_;
   }
 
   bool FeatureConstraintsTask::areConstraintsFulfilled() const
   {
-    assert(task_values_.size() == commands_.pos_lo.rows());
-    assert(task_values_.size() == commands_.pos_hi.rows());
+    assert(kdl_task_values_.rows() == commands_.pos_lo.rows());
+    assert(kdl_task_values_.rows() == commands_.pos_hi.rows());
 
-    for(unsigned int i=0; i<task_values_.size(); i++)
+    for(unsigned int i=0; i<kdl_task_values_.rows(); i++)
     {
       // return false as soon as one of the constraints is not fulfilled
-      if(task_values_[i] < commands_.pos_lo(i) || task_values_[i] > commands_.pos_hi(i))
+      if(kdl_task_values_(i) < commands_.pos_lo(i) || kdl_task_values_(i) > commands_.pos_hi(i))
         return false;
     }
 
@@ -41,18 +42,18 @@ namespace openrave_ompl_bridge
 
   double FeatureConstraintsTask::distanceFromConstraints() const
   {
-    assert(task_values_.size() == commands_.pos_lo.rows());
-    assert(task_values_.size() == commands_.pos_hi.rows());
+    assert(kdl_task_values_.rows() == commands_.pos_lo.rows());
+    assert(kdl_task_values_.rows() == commands_.pos_hi.rows());
    
     double sum = 0.0;
 
-    for(unsigned int i=0; i<task_values_.size(); i++)
+    for(unsigned int i=0; i<kdl_task_values_.rows(); i++)
     {
       // every not-fulfilled constraint adds to the squard sum
-      if(task_values_[i] < commands_.pos_lo(i) || task_values_[i] > commands_.pos_hi(i))
+      if(kdl_task_values_(i) < commands_.pos_lo(i) || kdl_task_values_(i) > commands_.pos_hi(i))
       {
-        double d1 = commands_.pos_lo(i) - task_values_[i];
-        double d2 = commands_.pos_hi(i) - task_values_[i];
+        double d1 = commands_.pos_lo(i) - kdl_task_values_(i);
+        double d2 = commands_.pos_hi(i) - kdl_task_values_(i);
         sum += std::min(d1*d1, d2*d2);
       }
     }
@@ -72,10 +73,26 @@ namespace openrave_ompl_bridge
     fromMsg(joint_values, kdl_joint_values_);
   }
 
-  const std::vector<double>& FeatureConstraintsTask::getJointValues() 
+  const std::vector<double>& FeatureConstraintsTask::getJointValues() const
   {
     assert(kdl_joint_values_.rows() == joint_values_.size());
    
     return joint_values_;
   }
+
+  void FeatureConstraintsTask::setTaskValues(const std::vector<double>& task_values)
+  {
+    assert(kdl_task_values_.rows() == task_values.size());
+    
+    fromMsg(task_values, kdl_task_values_);
+  }
+
+  const std::vector<double>& FeatureConstraintsTask::getTaskValues() const
+  {
+    assert(kdl_task_values_.rows() == task_values_.size());
+   
+    return task_values_;
+  } 
+
+
 } // namespace openrave_ompl_bridge

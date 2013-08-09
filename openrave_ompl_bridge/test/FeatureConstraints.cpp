@@ -9,20 +9,23 @@ class FeatureConstraintsTest : public ::testing::Test
     virtual void SetUp()
     {
       unsigned int num_constraints = 3;
-      true_constraints.commands_.resize(num_constraints);
-      false_constraints.commands_.resize(num_constraints);
+      true_constraints.init(num_constraints);
+      false_constraints.init(num_constraints);
+      std::vector<double> task_values;
       for(unsigned int i=0; i<num_constraints; i++)
       {
         true_constraints.commands_.pos_lo(i) = -1.0;
         true_constraints.commands_.pos_hi(i) = 2.5;
-        true_constraints.task_values_.push_back(0.25);
+        task_values.push_back(0.25);
 
         false_constraints.commands_.pos_lo(i) = -1.0;
         false_constraints.commands_.pos_hi(i) = 2.5;
       }
-      false_constraints.task_values_.push_back(0.0);
-      false_constraints.task_values_.push_back(-2.0);
-      false_constraints.task_values_.push_back(5.5);
+      true_constraints.setTaskValues(task_values);
+      task_values[0] = (0.0);
+      task_values[1] = (-2.0);
+      task_values[2] = (5.5);
+      false_constraints.setTaskValues(task_values);
 
       Feature oven, bottle;
       oven.name = "oven";
