@@ -32,10 +32,12 @@ namespace openrave_ompl_bridge
       void setObjectPose(const KDL::Frame& pose_object_in_tool);
       const KDL::Frame& getObjectPose();
 
+      void setToolPose(const KDL::Frame& pose_tool_in_EE);
+      const KDL::Frame& getToolPose();
+
       // input parameters for the various functions
       std::vector<Constraint> constraint_configurations_;
       Ranges commands_;
-      KDL::Frame pose_tool_in_EE_;
       RobotPtr robot_;
       EnvironmentPtr environment_;
 
@@ -50,6 +52,8 @@ namespace openrave_ompl_bridge
       // need to know where the object is w.r.t to the tool
       KDL::Frame pose_object_in_tool_; 
       // need to know where the tool is w.r.t. to the end-effector
+      KDL::Frame pose_tool_in_EE_;
+
   }; 
 
   class FeatureConstraintsPlanningTask

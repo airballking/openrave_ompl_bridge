@@ -96,4 +96,14 @@ namespace openrave_ompl_bridge
     return pose_object_in_tool_;
   }
 
+  void FeatureConstraintsTask::setToolPose(const KDL::Frame& pose_tool_in_EE)
+  {
+    pose_tool_in_EE_ = pose_tool_in_EE;
+  }
+
+  const KDL::Frame& FeatureConstraintsTask::getToolPose()
+  {
+    return pose_tool_in_EE_;
+  }
+
 } // namespace openrave_ompl_bridge
