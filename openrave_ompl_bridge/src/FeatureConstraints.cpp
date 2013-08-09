@@ -60,9 +60,9 @@ namespace openrave_ompl_bridge
     return std::sqrt(sum);
   }
 
-  const std::vector<double>& FeatureConstraintsTask::constrainConfiguration(const std::vector<double>& start_joint_values)
+  void FeatureConstraintsTask::constrainCurrentConfiguration()
   {
-    return joint_values_;
+    //TODO: implement me
   }
  
   void FeatureConstraintsTask::setJointValues(const std::vector<double>& joint_values)
@@ -70,8 +70,10 @@ namespace openrave_ompl_bridge
     toKDL(kdl_joint_values_, joint_values);
   }
 
-  const std::vector<double>& FeatureConstraintsTask::getJointValues() const
+  const std::vector<double>& FeatureConstraintsTask::getJointValues()
   {
+    assert(kdl_joint_values_.rows() == joint_values_.size());
+    toVector(joint_values_, kdl_joint_values_);
     return joint_values_;
   }
 

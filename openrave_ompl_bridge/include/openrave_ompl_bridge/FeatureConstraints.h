@@ -15,16 +15,19 @@ namespace openrave_ompl_bridge
     public:
       FeatureConstraintsTask(); 
 
-      // the functionality we're offering
+      // the functionality we're offering...
+      // ...needs to be called once before computation every time to number of constraints changes
       void resize(unsigned int num_constraints);
+      // ...simple queries to be called after computations have been done
       bool areConstraintsFulfilled() const;
       double distanceFromConstraints() const;
+      // ...two methods which trigger the actual computations
       void calculateConstraintValues(); 
-      const std::vector<double>& constrainConfiguration(const std::vector<double>& start_joint_values);
+      void constrainCurrentConfiguration();
       
       // getters and setters
       void setJointValues(const std::vector<double>& joint_values);
-      const std::vector<double>& getJointValues() const;  
+      const std::vector<double>& getJointValues();  
 
       void setTaskValues(const std::vector<double>& task_values);
       const std::vector<double>& getTaskValues(); 
