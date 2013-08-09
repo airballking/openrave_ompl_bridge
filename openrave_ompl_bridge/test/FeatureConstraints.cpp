@@ -56,7 +56,7 @@ class FeatureConstraintsTest : public ::testing::Test
       constraints.constraint_configurations_.push_back(c1);
       constraints.constraint_configurations_.push_back(c2);
       constraints.constraint_configurations_.push_back(c3);
-      constraints.pose_object_in_tool_ = KDL::Frame(KDL::Rotation::RotZ(M_PI/2.0), KDL::Vector(1.0, 1.0, 0.75));
+      constraints.setObjectPose(KDL::Frame(KDL::Rotation::RotZ(M_PI/2.0), KDL::Vector(1.0, 1.0, 0.75)));
       constraints.init(3);
     }
 

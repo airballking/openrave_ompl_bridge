@@ -29,11 +29,12 @@ namespace openrave_ompl_bridge
       void setTaskValues(const std::vector<double>& task_values);
       const std::vector<double>& getTaskValues() const; 
 
+      void setObjectPose(const KDL::Frame& pose_object_in_tool);
+      const KDL::Frame& getObjectPose();
 
       // input parameters for the various functions
       std::vector<Constraint> constraint_configurations_;
       Ranges commands_;
-      KDL::Frame pose_object_in_tool_; 
       KDL::Frame pose_tool_in_EE_;
       RobotPtr robot_;
       EnvironmentPtr environment_;
@@ -44,6 +45,11 @@ namespace openrave_ompl_bridge
       // std::vector representations are temporary variables
       std::vector<double> joint_values_, task_values_;
       KDL::JntArray kdl_joint_values_, kdl_task_values_;
+
+      // homogeneous transforms necessary to perform our calculations
+      // need to know where the object is w.r.t to the tool
+      KDL::Frame pose_object_in_tool_; 
+      // need to know where the tool is w.r.t. to the end-effector
   }; 
 
   class FeatureConstraintsPlanningTask
