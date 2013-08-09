@@ -9,8 +9,8 @@ class FeatureConstraintsTest : public ::testing::Test
     virtual void SetUp()
     {
       unsigned int num_constraints = 3;
-      true_constraints.init(num_constraints);
-      false_constraints.init(num_constraints);
+      true_constraints.resize(num_constraints);
+      false_constraints.resize(num_constraints);
       std::vector<double> task_values;
       Ranges true_cmd, false_cmd;
       true_cmd.resize(num_constraints);
@@ -59,7 +59,7 @@ class FeatureConstraintsTest : public ::testing::Test
       c3.tool_feature = bottle;
       c3.object_feature = oven;
 
-      constraints.init(3);
+      constraints.resize(3);
       std::vector<Constraint> constraint_vector;
       constraint_vector.push_back(c1);
       constraint_vector.push_back(c2);
@@ -89,7 +89,8 @@ TEST_F(FeatureConstraintsTest, distanceFromConstraints)
 
 TEST_F(FeatureConstraintsTest, calculateConstraintValues)
 {
-  std::vector<double> values = constraints.calculateConstraintValues();
+  constraints.calculateConstraintValues();
+  std::vector<double> values = constraints.getTaskValues();
   ASSERT_EQ(values.size(), 3);
   EXPECT_DOUBLE_EQ(0.75, values[0]);
   EXPECT_DOUBLE_EQ(std::sqrt(2.0), values[1]);

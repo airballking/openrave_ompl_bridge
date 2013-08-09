@@ -8,7 +8,7 @@ namespace openrave_ompl_bridge
     Constraint::init();  
   }
 
-  void FeatureConstraintsTask::init(unsigned int num_constraints)
+  void FeatureConstraintsTask::resize(unsigned int num_constraints)
   {
     kdl_task_values_.resize(num_constraints);
     kdl_joint_values_.resize(num_constraints);
@@ -18,11 +18,9 @@ namespace openrave_ompl_bridge
     constraint_configurations_.resize(num_constraints);
   }
 
-  const std::vector<double>& FeatureConstraintsTask::calculateConstraintValues()
+  void FeatureConstraintsTask::calculateConstraintValues()
   {
     evaluateConstraints(kdl_task_values_, pose_object_in_tool_, constraint_configurations_);
-    toVector(task_values_, kdl_task_values_);
-    return task_values_;
   }
 
   bool FeatureConstraintsTask::areConstraintsFulfilled() const
@@ -82,8 +80,10 @@ namespace openrave_ompl_bridge
     toKDL(kdl_task_values_, task_values);
   }
 
-  const std::vector<double>& FeatureConstraintsTask::getTaskValues() const
+  const std::vector<double>& FeatureConstraintsTask::getTaskValues()
   {
+    assert(kdl_task_values_.rows() == task_values_.size());
+    toVector(task_values_, kdl_task_values_);
     return task_values_;
   } 
 

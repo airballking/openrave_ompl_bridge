@@ -16,10 +16,10 @@ namespace openrave_ompl_bridge
       FeatureConstraintsTask(); 
 
       // the functionality we're offering
-      void init(unsigned int num_constraints);
+      void resize(unsigned int num_constraints);
       bool areConstraintsFulfilled() const;
       double distanceFromConstraints() const;
-      const std::vector<double>& calculateConstraintValues(); 
+      void calculateConstraintValues(); 
       const std::vector<double>& constrainConfiguration(const std::vector<double>& start_joint_values);
       
       // getters and setters
@@ -27,7 +27,7 @@ namespace openrave_ompl_bridge
       const std::vector<double>& getJointValues() const;  
 
       void setTaskValues(const std::vector<double>& task_values);
-      const std::vector<double>& getTaskValues() const; 
+      const std::vector<double>& getTaskValues(); 
 
       void setObjectPose(const KDL::Frame& pose_object_in_tool);
       const KDL::Frame& getObjectPose();
