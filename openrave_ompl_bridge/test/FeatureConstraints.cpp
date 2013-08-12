@@ -96,3 +96,9 @@ TEST_F(FeatureConstraintsTest, calculateConstraintValues)
   EXPECT_DOUBLE_EQ(std::sqrt(2.0), values[1]);
   EXPECT_DOUBLE_EQ(1.0, values[2]);
 }
+
+TEST_F(FeatureConstraintsTest, getFeatureNames)
+{
+  EXPECT_STREQ(constraints.extractToolName().c_str(), "bottle");
+  EXPECT_STREQ(constraints.extractObjectName().c_str(), "oven");
+}

@@ -154,4 +154,20 @@ namespace openrave_ompl_bridge
     return constraint_commands_;
   }
 
+  const std::string& FeatureConstraintsTask::extractToolName()
+  {
+    assert(constraint_configurations_.size() > 0);
+    for(unsigned int i=1; i<constraint_configurations_.size(); i++)
+      assert(constraint_configurations_[0].tool_feature.name.compare(constraint_configurations_[i].tool_feature.name)==0);
+    return constraint_configurations_[0].tool_feature.name;
+  }
+
+  const std::string& FeatureConstraintsTask::extractObjectName()
+  {
+    assert(constraint_configurations_.size() > 0);
+    for(unsigned int i=1; i<constraint_configurations_.size(); i++)
+      assert(constraint_configurations_[0].object_feature.name.compare(constraint_configurations_[i].object_feature.name)==0);
+    return constraint_configurations_[0].object_feature.name;
+  }
+
 } // namespace openrave_ompl_bridge

@@ -50,6 +50,9 @@ namespace openrave_ompl_bridge
       void setCommands(const Ranges& commands);
       const Ranges& getCommands() const;
 
+      const std::string& extractToolName();
+      const std::string& extractObjectName();
+
    private:
       // members holding task and joint-values
       // KDL representation is always the current internal representation
