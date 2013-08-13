@@ -12,6 +12,7 @@
   <depend package="pr_ordata"/> <!-- only a test dependency -->
   <depend package="orocos_kdl"/>
   <depend package="feature_constraints"/>
+  <depend package="feature_constraints_standalone"/>
 
   <rosdep name="ompl"/>
   <rosdep name="gtest"/>

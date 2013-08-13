@@ -4,6 +4,8 @@
 #include <kdl/frames.hpp>
 #include <openrave_ompl_bridge/Robot.h>
 #include <openrave_ompl_bridge/Environment.h>
+#include <Eigen/Core>
+#include <feature_constraints_standalone/SolverWeighted.hpp>
 
 namespace openrave_ompl_bridge
 {
@@ -17,14 +19,15 @@ namespace openrave_ompl_bridge
 
       // the functionality we're offering...
       // ...needs to be called once before computation every time to number of constraints changes
-      void resize(unsigned int num_constraints);
+      void resize(unsigned int num_constraints, unsigned int num_joints);
       // ...simple queries to be called after computations have been done
       bool areConstraintsFulfilled() const;
       double distanceFromConstraints() const;
       // ...two methods which trigger the actual computations
       void calculateConstraintValues(); 
-      void constrainCurrentConfiguration();
-      
+      void constrainCurrentConfiguration(unsigned int max_iterations=1000, double derivative_delta=0.01, double max_delta_q=0.03, const std::string& manipulator_name="right_wam");
+      void updatePoseObjectInTool();
+ 
       // getters and setters
       void setJointValues(const std::vector<double>& joint_values);
       const std::vector<double>& getJointValues();  
@@ -73,6 +76,14 @@ namespace openrave_ompl_bridge
       // the actual constraints
       std::vector<Constraint> constraint_configurations_;
       Ranges constraint_commands_;
+
+      // WDLS-solver
+      SolverWeighted solver_;
+
+      // temporary variables for constraining configurations
+      KDL::Jacobian Ht_, JR_;
+      KDL::JntArray tmp_, ydot_, weights_, chi_des_, gains_, qdot_;
+      Eigen::MatrixXd A_, Wy_, Wq_, H_feature_;
   }; 
 
   class FeatureConstraintsPlanningTask
