@@ -162,7 +162,6 @@ Matrix<double, 6, 6> inverse_twist_proj(KDL::Frame f)
 
       differentiateConstraints(Ht_, kdl_task_values_, pose_object_in_tool_, constraint_configurations_, derivative_delta, tmp_); 
       control(ydot_, weights_, chi_des_, kdl_task_values_, constraint_commands_, gains_);
-
       
       assert(robot_);
       // robot jacobian from OpenRAVE: (Base: world_frame, RefPoint: EE_frame)
@@ -189,6 +188,7 @@ Matrix<double, 6, 6> inverse_twist_proj(KDL::Frame f)
       limitJntArrayEntries(qdot_, max_delta_q); 
       for(unsigned int i=0; i<qdot_.rows(); i++)
         kdl_joint_values_(i) = kdl_joint_values_(i) - qdot_(i);
+      enforceJointLimits();
     }
   }
  
@@ -200,6 +200,23 @@ Matrix<double, 6, 6> inverse_twist_proj(KDL::Frame f)
       std::string object_name = extractObjectName();
 
       pose_object_in_tool_ = environment_->getTransform(tool_name, object_name);
+    }
+  }
+
+  void FeatureConstraintsTask::enforceJointLimits(double epsilon)
+  {
+    assert(kdl_joint_values_.rows() == robot_->getDOF());
+
+    for(unsigned int i=0; i<robot_->getDOF(); i++)
+    {
+      if(kdl_joint_values_(i) > robot_->getUpperJointLimits()[i])
+      {
+        kdl_joint_values_(i) = robot_->getUpperJointLimits()[i] - epsilon;
+      }
+      else if(kdl_joint_values_(i) < robot_->getLowerJointLimits()[i])
+      {
+        kdl_joint_values_(i) = robot_->getLowerJointLimits()[i] + epsilon;
+      }
     }
   }
 

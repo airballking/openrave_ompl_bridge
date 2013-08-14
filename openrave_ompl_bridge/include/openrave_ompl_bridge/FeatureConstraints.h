@@ -27,6 +27,7 @@ namespace openrave_ompl_bridge
       void calculateConstraintValues(); 
       void constrainCurrentConfiguration(unsigned int max_iterations=1000, double derivative_delta=0.01, double max_delta_q=0.03, const std::string& manipulator_name="right_wam");
       void updatePoseObjectInTool();
+      void enforceJointLimits(double epsilon=0.000001);
  
       // getters and setters
       void setJointValues(const std::vector<double>& joint_values);
