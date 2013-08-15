@@ -5,6 +5,7 @@
 #include <kdl/jntarray.hpp>
 
 #include <feature_constraints/FeatureConstraints.h>
+#include <feature_constraints/Controller.h>
 
 #include "yaml-cpp/yaml.h"
 
@@ -35,6 +36,17 @@ namespace openrave_ompl_bridge
     return out;
   }
 
+  YAML::Emitter& operator << (YAML::Emitter& out, const KDL::JntArray& j)
+  {
+    out << YAML::Flow;
+    out << YAML::BeginSeq;
+    for(unsigned int i=0; i<j.rows(); i++)
+      out << j(i);    
+
+    out << YAML::EndSeq;
+    return out;
+  }
+
   YAML::Emitter& operator << (YAML::Emitter& out, const Feature& f)
   {
     out << YAML::BeginMap;
@@ -52,6 +64,18 @@ namespace openrave_ompl_bridge
     out << YAML::Key << "function" << YAML::Value << c.getFunction(); 
     out << YAML::Key << "tool_feature" << YAML::Value << c.tool_feature; 
     out << YAML::Key << "object_feature" << YAML::Value << c.object_feature;
+    out << YAML::EndMap;
+    return out;
+  }
+
+  YAML::Emitter& operator << (YAML::Emitter& out, const Ranges& r)
+  {
+    out << YAML::BeginMap;
+    out << YAML::Key << "pos_low" << YAML::Value << r.pos_lo;
+    out << YAML::Key << "pos_high" << YAML::Value << r.pos_hi; 
+    out << YAML::Key << "weight" << YAML::Value << r.weight; 
+    out << YAML::Key << "max_vel" << YAML::Value << r.max_vel;
+    out << YAML::Key << "min_vel" << YAML::Value << r.min_vel;
     out << YAML::EndMap;
     return out;
   }
@@ -79,6 +103,12 @@ namespace openrave_ompl_bridge
     node["orientation"] >> f.M;
   }
 
+  void operator >> (const YAML::Node& node, KDL::JntArray& j)
+  {
+    j.resize(node.size());
+    for(unsigned int i=0; i<node.size(); i++)
+      node[i] >> j(i);
+  }
   void operator >> (const YAML::Node& node, Feature& f)
   {
     node["name"] >> f.name;
@@ -96,6 +126,14 @@ namespace openrave_ompl_bridge
     node["object_feature"] >> c.object_feature;
   }
 
+  void operator >> (const YAML::Node& node, Ranges& r)
+  {
+    node["pos_low"] >> r.pos_lo;
+    node["pos_high"] >> r.pos_hi;
+    node["weight"] >> r.weight;
+    node["max_vel"] >> r.max_vel;
+    node["min_vel"] >> r.min_vel;
+  }
 
 } /* namespace openrave_ompl_bridge */
 

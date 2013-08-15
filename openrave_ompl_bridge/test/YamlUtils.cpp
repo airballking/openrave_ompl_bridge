@@ -26,6 +26,20 @@ class YamlUtilsTest : public ::testing::Test
       height_constraint.setFunction("height");
       height_constraint.tool_feature = bottle_feature;
       height_constraint.object_feature = oven_feature;
+
+      joints.resize(7);
+      for(unsigned int i=0; i<joints.rows(); i++)
+        joints(i) = 0.1*i;
+
+      commands.resize(3);
+      for(unsigned int i=0; i<commands.size(); i++)
+      {
+        commands.pos_lo(i) = -0.1 - i;
+        commands.pos_hi(i) = 0.1 + i;
+        commands.weight(i) = 1.0;
+        commands.max_vel(i) = commands.pos_hi(i) * commands.pos_hi(i);
+        commands.min_vel(i) = 0.0;
+      }
     }
 
     virtual void TearDown()
@@ -33,8 +47,10 @@ class YamlUtilsTest : public ::testing::Test
     } 
 
     KDL::Frame frame;
+    KDL::JntArray joints;
     Feature oven_feature, bottle_feature;
     Constraint height_constraint;
+    Ranges commands;
 };
 
 TEST_F(YamlUtilsTest, KDLVector)
@@ -140,4 +156,46 @@ TEST_F(YamlUtilsTest, Constraint)
 
   // making sure everything checks out
   EXPECT_TRUE(Equal(height_constraint, c));
+}
+
+TEST_F(YamlUtilsTest, JntArray)
+{
+  // writing it out
+  YAML::Emitter out;
+  out << joints;
+
+  // reading it back
+  KDL::JntArray j;
+  std::istringstream iss;
+  iss.str (out.c_str());
+
+  YAML::Parser parser(iss);
+  YAML::Node doc;
+  while(parser.GetNextDocument(doc)) {
+    doc >> j;
+  }
+
+  // making sure everything checks out
+  EXPECT_TRUE(Equal(joints, j));
+}
+
+TEST_F(YamlUtilsTest, Ranges)
+{
+  // writing it out
+  YAML::Emitter out;
+  out << commands;
+
+  // reading it back
+  Ranges r;
+  std::istringstream iss;
+  iss.str (out.c_str());
+
+  YAML::Parser parser(iss);
+  YAML::Node doc;
+  while(parser.GetNextDocument(doc)) {
+    doc >> r;
+  }
+
+  // making sure everything checks out
+  EXPECT_TRUE(Equal(commands, r));
 }
