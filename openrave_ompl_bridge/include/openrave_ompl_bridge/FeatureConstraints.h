@@ -1,3 +1,6 @@
+#ifndef OPENRAVE_OMPL_BRIDGE_FEATURE_CONSTRAINTS_H
+#define OPENRAVE_OMPL_BRIDGE_FEATURE_CONSTRAINTS_H
+
 #include <vector>
 #include <feature_constraints/FeatureConstraints.h>
 #include <feature_constraints/Controller.h>
@@ -94,9 +97,18 @@ namespace openrave_ompl_bridge
       FeatureConstraintsTask goal_constraints_;
 
       // some convenience functions for stuff that's equal in both constraint sets
-      void setRobot(const RobotPtr& robot);
-      void setEnvironment(const EnvironmentPtr& environment);
-      void setToolPose(const KDL::Frame& pose_tool_in_EE);
-      void setObjectPose(const KDL::Frame& pose_object_in_tool);
+      void setRobot(const RobotPtr& robot)
+      {
+        path_constraints_.setRobot(robot);
+        goal_constraints_.setRobot(robot);
+      }
+
+      void setEnvironment(const EnvironmentPtr& environment)
+      {
+        path_constraints_.setEnvironment(environment);
+        goal_constraints_.setEnvironment(environment);
+      }
   };
 } // namespace openrave_ompl_bridge
+
+#endif // OPENRAVE_OMPL_BRIDGE_FEATURE_CONSTRAINTS_H
