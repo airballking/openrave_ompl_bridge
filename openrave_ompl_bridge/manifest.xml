@@ -16,6 +16,7 @@
 
   <rosdep name="ompl"/>
   <rosdep name="gtest"/>
+  <rosdep name="yaml-cpp"/>
 
   <export>
     <openrave plugins="${prefix}/lib"/>
