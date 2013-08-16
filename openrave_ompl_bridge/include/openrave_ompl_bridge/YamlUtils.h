@@ -68,6 +68,15 @@ namespace openrave_ompl_bridge
     return out;
   }
 
+  YAML::Emitter& operator << (YAML::Emitter& out, const std::vector<Constraint>& c)
+  {
+    out << YAML::BeginSeq;
+    for(unsigned int i=0; i<c.size(); i++)
+      out << c[i];
+    out << YAML::EndSeq;
+    return out;
+  }
+
   YAML::Emitter& operator << (YAML::Emitter& out, const Ranges& r)
   {
     out << YAML::BeginMap;
@@ -124,6 +133,13 @@ namespace openrave_ompl_bridge
     c.setFunction(function_name);
     node["tool_feature"] >> c.tool_feature;
     node["object_feature"] >> c.object_feature;
+  }
+
+  void operator >> (const YAML::Node& node, std::vector<Constraint>& c)
+  {
+    c.resize(node.size());
+    for(unsigned int i=0; i<node.size(); i++)
+      node[i] >> c[i];
   }
 
   void operator >> (const YAML::Node& node, Ranges& r)

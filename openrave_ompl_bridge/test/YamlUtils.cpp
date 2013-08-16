@@ -27,6 +27,15 @@ class YamlUtilsTest : public ::testing::Test
       height_constraint.tool_feature = bottle_feature;
       height_constraint.object_feature = oven_feature;
 
+      distance_constraint.name = "distance of bottle from oven";
+      distance_constraint.setFunction("distance");
+      distance_constraint.tool_feature = bottle_feature;
+      distance_constraint.object_feature = oven_feature;
+
+      constraints.clear();
+      constraints.push_back(height_constraint);
+      constraints.push_back(distance_constraint);
+ 
       joints.resize(7);
       for(unsigned int i=0; i<joints.rows(); i++)
         joints(i) = 0.1*i;
@@ -49,7 +58,8 @@ class YamlUtilsTest : public ::testing::Test
     KDL::Frame frame;
     KDL::JntArray joints;
     Feature oven_feature, bottle_feature;
-    Constraint height_constraint;
+    Constraint height_constraint, distance_constraint;
+    std::vector<Constraint> constraints;
     Ranges commands;
 };
 
@@ -198,4 +208,27 @@ TEST_F(YamlUtilsTest, Ranges)
 
   // making sure everything checks out
   EXPECT_TRUE(Equal(commands, r));
+}
+
+TEST_F(YamlUtilsTest, VectorOfConstraints)
+{
+  // writing it out
+  YAML::Emitter out;
+  out << constraints;
+
+  // reading it back
+  std::vector<Constraint> c;
+  std::istringstream iss;
+  iss.str (out.c_str());
+
+  YAML::Parser parser(iss);
+  YAML::Node doc;
+  while(parser.GetNextDocument(doc)) {
+    doc >> c;
+  }
+
+  // making sure everything checks out
+  ASSERT_EQ(constraints.size(), c.size());
+  for(unsigned int i=0; i<c.size(); i++)
+    EXPECT_TRUE(Equal(constraints[i], c[i]));
 }
