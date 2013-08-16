@@ -15,7 +15,7 @@ rosbuild_add_library(${PROJECT_NAME} src/Robot.cpp src/RRTConnect.cpp src/RRTCon
 target_link_libraries(${PROJECT_NAME} ompl)
  
 # BUILDING OUR CBiRRT PLANNER INTO A LIBRARY
-rosbuild_add_library(CBIRRT src/CBiRRTSpace.cpp src/CBiRRTMotionValidator.cpp src/FeatureConstraints.cpp)
+rosbuild_add_library(CBIRRT src/CBiRRTSpace.cpp src/CBiRRTMotionValidator.cpp src/FeatureConstraints.cpp src/FCBiRRTParameters.cpp)
 target_link_libraries(CBIRRT ompl)
 
 # EXPOSING THE PLUGINS TO OPENRAVE IN A SEPARATE LIBRARY
@@ -24,5 +24,5 @@ target_link_libraries(OPENRAVE_PLUGINS ${PROJECT_NAME})
 
 # UNIT TESTING
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
-rosbuild_add_gtest(test/unit_tests test/UnitTests.cpp test/Robot.cpp test/RRTConnect.cpp test/RRTConnectParameters.cpp test/CBiRRTSpace.cpp test/CBiRRTSimple.cpp test/Conversions.cpp test/Environment.cpp test/FeatureConstraints.cpp test/YamlUtils.cpp)
+rosbuild_add_gtest(test/unit_tests test/UnitTests.cpp test/Robot.cpp test/RRTConnect.cpp test/RRTConnectParameters.cpp test/CBiRRTSpace.cpp test/CBiRRTSimple.cpp test/Conversions.cpp test/Environment.cpp test/FeatureConstraints.cpp test/YamlUtils.cpp test/FCBiRRTParameters.cpp)
 target_link_libraries(test/unit_tests ${PROJECT_NAME} CBIRRT yaml-cpp)
