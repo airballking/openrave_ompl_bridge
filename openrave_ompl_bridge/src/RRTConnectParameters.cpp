@@ -6,7 +6,6 @@ namespace openrave_ompl_bridge
   {
     _vXMLParameters.push_back("planning_timelimit");
     _vXMLParameters.push_back("smoothing_timelimit");
-
   }
 
   bool RRTConnectParameters::serialize(std::ostream& O, int options) const
