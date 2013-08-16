@@ -31,7 +31,8 @@ namespace openrave_ompl_bridge
 
       // another aux-function for xml-parsing, called at end of each xml-field, returns true if parsing of field was successful
       virtual bool endElement(const std::string& name);
-     
+
+    private:     
       // internal parameter
       bool is_processing;
   };
