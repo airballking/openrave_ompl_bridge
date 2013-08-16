@@ -29,7 +29,7 @@ namespace openrave_ompl_bridge
       virtual bool serialize(std::ostream& O, int options=0) const;
 
       // aux-function for xml-parsing, called at start of each xml-field, returns PE_SUPPORT if the field will be read by class
-      ProcessElement startElement(const std::string& name, const OpenRAVE::AttributesList& atts); 
+      virtual ProcessElement startElement(const std::string& name, const OpenRAVE::AttributesList& atts); 
 
       // another aux-function for xml-parsing, called at end of each xml-field, returns true if parsing of field was successful
       virtual bool endElement(const std::string& name);
