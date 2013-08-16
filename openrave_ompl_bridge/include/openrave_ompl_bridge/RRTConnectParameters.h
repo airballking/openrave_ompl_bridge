@@ -4,8 +4,6 @@
 #include <openrave-core.h>
 #include <openrave/planner.h>
 
-#include <ompl/geometric/SimpleSetup.h>
-
 namespace openrave_ompl_bridge
 {
   // a calls to hold the parameters for the RRTConnect algorithm in the OMPL library
