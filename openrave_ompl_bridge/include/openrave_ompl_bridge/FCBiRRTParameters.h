@@ -2,6 +2,9 @@
 #define OPENRAVE_OMPL_BRIDGE_FCBIRRT_PARAMETERS_H
 
 #include <openrave_ompl_bridge/RRTConnectParameters.h>
+#include <feature_constraints/FeatureConstraints.h>
+#include <feature_constraints/Controller.h>
+#include <vector>
 
 namespace openrave_ompl_bridge
 {
@@ -11,6 +14,16 @@ namespace openrave_ompl_bridge
     public:
       // well, the default constructor of this class ;)
       FCBiRRTParameters();
+
+      // constraints for path and goal 
+      std::vector<Constraint> goal_config, path_config;
+      Ranges goal_command, path_command;
+
+      // some getters 
+      const std::vector<Constraint>& GetGoalConfig();
+      const std::vector<Constraint>& GetPathConfig();
+      const Ranges& GetGoalCommand();
+      const Ranges& GetPathCommand();
 
     protected:
       // helper function which generates an xml-representation of this object and flushes it into an output-stream

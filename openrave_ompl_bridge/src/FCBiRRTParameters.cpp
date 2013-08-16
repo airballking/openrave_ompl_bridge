@@ -1,10 +1,14 @@
 #include <openrave_ompl_bridge/FCBiRRTParameters.h>
+#include <openrave_ompl_bridge/YamlUtils.h>
 
 namespace openrave_ompl_bridge
 {
   FCBiRRTParameters::FCBiRRTParameters() : RRTConnectParameters::RRTConnectParameters(), is_processing(false)
   {
-
+    _vXMLParameters.push_back("goal_config");
+    _vXMLParameters.push_back("goal_command");
+    _vXMLParameters.push_back("path_config");
+    _vXMLParameters.push_back("path_command");
   }
 
   bool FCBiRRTParameters::serialize(std::ostream& O, int options) const
@@ -13,6 +17,18 @@ namespace openrave_ompl_bridge
     {
       return false;
     }
+
+    YAML::Emitter goal_config_out, path_config_out, goal_command_out, path_command_out;
+
+    goal_config_out << goal_config;
+    path_config_out << path_config;
+    goal_command_out << goal_command;
+    path_command_out << path_command;
+
+    O << "<goal_config>" << goal_config_out.c_str() << "</goal_config>" << std::endl;
+    O << "<path_config>" << path_config_out.c_str() << "</path_config>" << std::endl;
+    O << "<goal_command>" << goal_command_out.c_str() << "</goal_command>" << std::endl;
+    O << "<path_command>" << path_command_out.c_str() << "</path_command>" << std::endl;
 
     if( !(options & 1) ) 
     {
@@ -36,7 +52,7 @@ namespace openrave_ompl_bridge
       case PE_Ignore: return PE_Ignore;
     }
  
-    is_processing = false;
+    is_processing = name=="goal_config" || "path_config" || "goal_command" || "path_command";
 
     return is_processing ? PE_Support : PE_Pass;
   }
@@ -44,19 +60,39 @@ namespace openrave_ompl_bridge
   bool FCBiRRTParameters::endElement(const std::string& name)
   {
     if( is_processing ) 
-    {/*
-      if( name == "planning_timelimit") 
+    {
+      if(name == "goal_config") 
       {
-        _ss >> planning_timelimit;
+        YAML::Parser parser(_ss);
+        YAML::Node doc;
+        while(parser.GetNextDocument(doc))
+          doc >> goal_config;
       }
-      else if( name == "smoothing_timelimit") 
+      else if(name == "path_config") 
       {
-        _ss >> smoothing_timelimit;
+        YAML::Parser parser(_ss);
+        YAML::Node doc;
+        while(parser.GetNextDocument(doc))
+          doc >> path_config;
       }
-      else*/
-//      {
+      else if(name == "goal_command") 
+      {
+        YAML::Parser parser(_ss);
+        YAML::Node doc;
+        while(parser.GetNextDocument(doc))
+          doc >> goal_command;
+      }
+      else if(name == "path_command") 
+      {
+        YAML::Parser parser(_ss);
+        YAML::Node doc;
+        while(parser.GetNextDocument(doc))
+          doc >> path_command;
+      }
+      else
+      {
         RAVELOG_WARN(str(boost::format("unknown tag %s\n")%name));
-//      }
+      }
     is_processing = false;
     return false;
     }
@@ -64,4 +100,25 @@ namespace openrave_ompl_bridge
     // give a chance for the parent parameters to get processed
     return RRTConnectParameters::endElement(name);
   }
+
+  const std::vector<Constraint>& FCBiRRTParameters::GetGoalConfig()
+  {
+    return goal_config; 
+  }
+
+  const std::vector<Constraint>& FCBiRRTParameters::GetPathConfig()
+  { 
+    return path_config; 
+  }
+
+  const Ranges& FCBiRRTParameters::GetGoalCommand()
+  { 
+    return goal_command; 
+  }
+
+  const Ranges& FCBiRRTParameters::GetPathCommand()
+  { 
+    return path_command; 
+  }
+
 } /* namespace openrave_ompl_bridge */
